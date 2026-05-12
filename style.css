@@ -1619,6 +1619,11 @@ html, body {
   gap: 4px;
   flex-wrap: wrap;
   justify-content: center;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
 }
 
 /* Streak strip on result */

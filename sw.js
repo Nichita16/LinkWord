@@ -1,4 +1,4 @@
-const CACHE = 'linkwords-v108';
+const CACHE = 'linkwords-v109';
 const ASSETS = ['/', '/index.html', '/style.css', '/data-core.js', '/i18n-strings.js', '/lw-graph.js', '/lw-scoring.js', '/lw-i18n.js', '/lw-audio.js', '/lw-collection.js', '/auth.js', '/game.js', '/manifest.json'];
 const NETWORK_FIRST = ['/auth.js'];
 const STALE_REVALIDATE = ['/data-core.js'];
