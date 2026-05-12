@@ -504,17 +504,21 @@ html, body {
 .hero-line {
   flex: 1;
   height: 2px;
-  background: rgba(255,255,255,0.18);
+  background: linear-gradient(90deg, rgba(233,30,99,0.5), rgba(114,9,183,0.3), rgba(255,255,255,0.15));
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+  border-radius: 1px;
 }
-.hero-line span {
-  width: 8px; height: 8px;
-  border-radius: 4px;
-  background: rgba(255,255,255,0.3);
-  display: block;
+.hero-line span { display: none; }
+.hero-line::after {
+  content: '→';
+  position: absolute;
+  font-size: 14px;
+  color: rgba(255,255,255,0.4);
+  background: linear-gradient(145deg, #1A0B2E, #0F0618);
+  padding: 0 8px;
 }
 .hero-end {
   background: var(--ink);
