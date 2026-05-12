@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['stats','daily','achievements','settings','ads','updatedAt','displayName'])
+        && request.resource.size() < 100000;
+    }
+    match /weekly/{weekId}/scores/{scoreId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.auth.uid == scoreId
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.score is int
+        && request.resource.data.score >= 0
+        && request.resource.data.score <= 99999
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 1
+        && request.resource.data.name.size() <= 50
+        && request.resource.data.ts == request.time
+        && request.resource.data.keys().hasOnly(['score','name','uid','ts']);
+      allow update: if request.auth != null
+        && request.auth.uid == scoreId
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.score is int
+        && request.resource.data.score >= 0
+        && request.resource.data.score <= 99999
+        && request.resource.data.score >= resource.data.score
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 1
+        && request.resource.data.name.size() <= 50
+        && request.resource.data.ts == request.time
+        && request.resource.data.keys().hasOnly(['score','name','uid','ts']);
+    }
+  }
+}

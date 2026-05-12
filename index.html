@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#7209b7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com https://pagead2.googlesyndication.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://accounts.google.com https://apis.google.com https://pagead2.googlesyndication.com https://*.firebaseapp.com; frame-ancestors 'none';">
+  <meta name="description" content="Link words, build chains. A daily word association puzzle game in 20 languages.">
+  <meta property="og:title" content="LinkWords — Daily Word Association Puzzle">
+  <meta property="og:description" content="Link words, build chains. A daily word association puzzle in 20 languages.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://linkwords.app/">
+  <meta property="og:image" content="https://linkwords.app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="LinkWords — Daily Word Association Puzzle">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LinkWords — Daily Word Association Puzzle">
+  <meta name="twitter:description" content="Link words, build chains. A daily word association puzzle in 20 languages.">
+  <meta name="twitter:image" content="https://linkwords.app/og-image.png">
+  <meta name="twitter:image:alt" content="LinkWords — Daily Word Association Puzzle">
+  <title>LinkWords — Daily Word Association Puzzle</title>
+  <link rel="canonical" href="https://linkwords.app/">
+  <link rel="alternate" hreflang="x-default" href="https://linkwords.app/">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://apis.google.com" crossorigin>
+  <meta name="apple-mobile-web-app-title" content="LinkWords">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192.svg">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg">
+  <link rel="preload" href="style.css" as="style">
+  <link rel="preload" href="game.js" as="script">
+  <link rel="preload" href="data-core.js" as="script">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <!-- SW registered in game.js with update detection -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": ["WebApplication", "VideoGame"],
+    "name": "LinkWords",
+    "url": "https://linkwords.app/",
+    "description": "Link words, build chains. A daily word association puzzle game in 20 languages.",
+    "applicationCategory": "GameApplication",
+    "genre": "Word Game",
+    "operatingSystem": "Any",
+    "inLanguage": ["en","es","it","fr","de","pt","ru","ro","uk","tr","pl","nl","ja","ko","zh","ar","hi","id","th","vi"],
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/InStock" },
+    "featureList": ["Daily puzzle mode","Endless mode","Blitz mode","20 languages","Offline play via PWA","Cloud save","Cross-device sync"],
+    "image": "https://linkwords.app/og-image.png",
+    "screenshot": "https://linkwords.app/og-image.png",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "softwareVersion": "3.0",
+    "publisher": { "@type": "Organization", "name": "LinkWords" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type":"Question","name":"How do you play LinkWords?","acceptedAnswer":{"@type":"Answer","text":"Choose words that connect the starting word to the ending word. Build a chain of associated words step by step. The shorter and more creative your chain, the higher your score."}},
+      {"@type":"Question","name":"Is LinkWords free to play?","acceptedAnswer":{"@type":"Answer","text":"Yes. LinkWords is completely free to play in your browser with no downloads required. It also works offline as a Progressive Web App."}},
+      {"@type":"Question","name":"How many languages does LinkWords support?","acceptedAnswer":{"@type":"Answer","text":"LinkWords is available in 20 languages including English, Spanish, Italian, French, German, Portuguese, Russian, Romanian, Ukrainian, Turkish, Polish, Dutch, Japanese, Korean, Chinese, Arabic, Hindi, Indonesian, Thai, and Vietnamese."}},
+      {"@type":"Question","name":"How often does the daily puzzle reset?","acceptedAnswer":{"@type":"Answer","text":"The daily puzzle resets every day at midnight. All players worldwide receive the same puzzle each day."}}
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a href="#app" class="sr-only" style="position:absolute;top:-9999px;left:-9999px;z-index:9999" onfocus="this.style.position='fixed';this.style.top='8px';this.style.left='8px'" onblur="this.style.position='absolute';this.style.top='-9999px'">Skip to game</a>
+  <div class="sr-only" aria-live="assertive" id="a11yAnnouncer"></div>
+  <noscript>
+    <div style="font-family:system-ui;max-width:600px;margin:2rem auto;padding:1rem;text-align:center">
+      <h1>LinkWords — Daily Word Association Puzzle</h1>
+      <p>Build chains of associated words. A free daily puzzle game available in 20 languages. Play daily challenges, endless mode, or blitz mode right in your browser.</p>
+      <p style="margin-top:1rem;color:#888">Please enable JavaScript to play.</p>
+    </div>
+  </noscript>
+  <main id="app" role="main">
+
+    <!-- SPLASH -->
+    <div id="splash" class="screen active">
+      <div class="splash-content">
+        <div class="splash-logo">
+          <div class="splash-w">L</div>
+        </div>
+        <p class="splash-title" aria-hidden="true">Link<span>Words</span></p>
+        <p class="splash-tagline" data-i18n="tagline"></p>
+        <div class="splash-loader" id="splashLoader"><div class="splash-loader-fill"></div></div>
+        <p class="splash-tap" id="splashTap" hidden data-i18n="tapToPlay">Tap to play</p>
+      </div>
+    </div>
+
+    <!-- MENU -->
+    <div id="menu" class="screen">
+      <div class="screen-inner">
+        <div class="seasonal-banner" id="seasonalBanner" role="status" aria-live="polite" hidden></div>
+        <div class="menu-header">
+          <div class="logo-mark" aria-hidden="true">W</div>
+          <h1>Link<span>Words</span></h1>
+          <button class="btn-howto-mini" data-action="showHowTo" aria-label="How to play">
+            <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><path d="M9 9a3 3 0 015.12 1c0 2-3 3-3 3M12 17h.01" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <div class="streak-strip" id="streakStrip" aria-label="Weekly streak"></div>
+
+        <div class="comeback-banner" id="comebackBanner" hidden style="display:none">
+          <div class="comeback-icon">🛡️</div>
+          <div class="comeback-text">
+            <strong id="comebackTitle">Save your streak!</strong>
+            <span id="comebackDesc">Complete yesterday's puzzle to recover your streak</span>
+          </div>
+          <button class="btn btn-accent btn-sm" data-action="startComeback" id="comebackBtn" data-i18n="comebackPlay">Play</button>
+        </div>
+
+        <div class="menu-buttons">
+          <button class="btn btn-accent" id="continueBtn" data-action="resumeGame" hidden>
+            <svg class="btn-svg" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+            <span data-i18n="continueGame">Continue</span>
+          </button>
+          <button class="btn btn-primary btn-play-big" data-action="startDaily">
+            <svg class="btn-svg" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+            <span data-i18n="dailyPath">Daily Path</span>
+          </button>
+          <div class="menu-modes-row">
+            <button class="btn btn-ghost btn-practice" data-action="startEndless">
+              <span data-i18n="freeWeave">Free Weave</span>
+            </button>
+            <button class="btn btn-secondary btn-extra-mode" data-action="startBlitz" id="blitzBtn" hidden>
+              <svg class="btn-svg" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/></svg>
+              <span data-i18n="blitz"></span>
+            </button>
+          </div>
+          <button class="btn btn-secondary btn-extra-mode btn-bonus" data-action="startBonus" id="bonusBtn" hidden>
+            <svg class="btn-svg" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/></svg>
+            <span data-i18n="bonus">Bonus</span>
+          </button>
+          <button class="btn btn-secondary btn-extra-mode" data-action="startWordRush" id="wordRushBtn" hidden>
+            <span data-i18n="wordRush">Word Rush</span>
+          </button>
+          <button class="btn btn-secondary btn-extra-mode" data-action="startWeeklyTrial" id="weeklyTrialBtn" hidden>
+            <span data-i18n="weeklyTrial">Weekly Trial</span>
+          </button>
+        </div>
+
+        <div class="difficulty-selector menu-difficulty" id="difficultySelector" role="radiogroup" aria-label="Difficulty">
+          <button class="diff-btn" data-diff="easy" role="radio" aria-checked="false" data-i18n="easy">Easy</button>
+          <button class="diff-btn active" data-diff="medium" role="radio" aria-checked="true" data-i18n="medium">Medium</button>
+          <button class="diff-btn" data-diff="hard" role="radio" aria-checked="false" data-i18n="hard">Hard</button>
+        </div>
+
+        <!-- Hidden stubs for JS references -->
+        <div class="level-section" id="levelSection" hidden></div>
+        <div class="welcome-back-card" id="welcomeBackCard" hidden></div>
+        <div class="daily-rings" id="dailyRings" hidden></div>
+        <div class="theme-subtitle" id="themeSubtitle" hidden></div>
+        <div id="nextPuzzlePreview" hidden></div>
+        <div id="archiveBtn" hidden></div>
+
+        <div class="ad-banner-container" id="adBannerMenu" hidden>
+          <div id="adBanner" class="ad-banner-slot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOW TO PLAY -->
+    <div id="howto" class="screen">
+      <div class="screen-inner">
+        <button class="btn-back" data-action="goBack" aria-label="Back">
+          <svg viewBox="0 0 24 24" width="24" height="24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="tutorial-slides" id="tutorialSlides">
+          <div class="tutorial-slide active" data-slide="0">
+            <div class="tutorial-icon">
+              <svg viewBox="0 0 80 80" width="80" height="80"><circle cx="20" cy="40" r="14" fill="#f72585"/><line x1="34" y1="40" x2="46" y2="40" stroke="#7209b7" stroke-width="3" stroke-dasharray="4"/><circle cx="60" cy="40" r="14" fill="#4cc9f0"/></svg>
+            </div>
+            <h2 data-i18n="tutorial1Title"></h2>
+            <p data-i18n="tutorial1Text"></p>
+          </div>
+          <div class="tutorial-slide" data-slide="1">
+            <div class="tutorial-icon">
+              <svg viewBox="0 0 80 80" width="80" height="80"><circle cx="15" cy="40" r="10" fill="#f72585"/><line x1="25" y1="40" x2="30" y2="40" stroke="#7209b7" stroke-width="2"/><circle cx="40" cy="40" r="10" fill="#b5179e"/><line x1="50" y1="40" x2="55" y2="40" stroke="#7209b7" stroke-width="2"/><circle cx="65" cy="40" r="10" fill="#4cc9f0"/></svg>
+            </div>
+            <h2 data-i18n="tutorial2Title"></h2>
+            <p data-i18n="tutorial2Text"></p>
+          </div>
+          <div class="tutorial-slide" data-slide="2">
+            <div class="tutorial-icon">
+              <svg viewBox="0 0 80 80" width="80" height="80"><polygon points="40,10 50,35 75,35 55,50 62,75 40,60 18,75 25,50 5,35 30,35" fill="#f8961e" opacity=".8"/><text x="40" y="52" text-anchor="middle" font-size="18" font-weight="bold" fill="white">+</text></svg>
+            </div>
+            <h2 data-i18n="tutorial3Title"></h2>
+            <p data-i18n="tutorial3Text"></p>
+          </div>
+        </div>
+        <div class="tutorial-dots" id="tutorialDots">
+          <span class="dot active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+        <div class="tutorial-actions">
+          <button class="btn btn-primary" data-action="tutorialNext" data-i18n="next"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME -->
+    <div id="game" class="screen">
+      <div class="challenge-banner" id="challengeBanner" role="status" hidden></div>
+      <header class="game-header">
+        <button class="btn-back" data-action="confirmExit" aria-label="Exit game">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="game-info">
+          <div class="info-pill" id="timerPill" aria-live="off">
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            <span id="timerDisplay">0:00</span>
+          </div>
+          <div class="info-pill score-pill">
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><polygon points="12,2 15,9 22,9 16.5,14 18.5,21 12,17 5.5,21 7.5,14 2,9 9,9" fill="currentColor"/></svg>
+            <span id="scoreDisplay">0</span>
+            <span id="comboBadge" class="combo-badge" hidden></span>
+          </div>
+          <div class="info-pill diff-pill" id="diffPill" hidden>
+            <span id="diffDisplay"></span>
+          </div>
+          <div class="info-pill paths-pill" id="pathsPill" hidden>
+            <span id="connectableCount">0</span>
+          </div>
+        </div>
+        <button class="btn-circle btn-sm" data-action="toggleSound" id="soundBtn" aria-label="Sound" aria-pressed="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" id="soundIcon" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" class="sound-waves"/></svg>
+        </button>
+      </header>
+
+      <div class="game-body">
+        <div class="par-indicator" id="parIndicator" hidden></div>
+        <div class="endpoint start-word" id="startWord" role="button" tabindex="0"></div>
+
+        <div class="chain-track" id="chainTrack">
+          <div class="chain-nodes" id="chainNodes"></div>
+          <div class="chain-placeholder" id="chainPlaceholder" data-i18n="tapToStart"></div>
+        </div>
+
+        <div class="grid-container" id="gridContainer">
+          <svg class="svg-connections" id="svgConnections" aria-hidden="true"></svg>
+          <div class="word-grid" id="wordGrid" role="group" aria-label="Word choices" data-i18n-aria="wordChoices"></div>
+        </div>
+
+        <div class="endpoint end-word" id="endWord" role="button" tabindex="0"></div>
+      </div>
+
+      <div class="game-actions" id="gameActions">
+        <button class="btn btn-action" data-action="undo" id="undoBtn" disabled>
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 10h10a5 5 0 015 5v2M3 10l5-5M3 10l5 5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="undo"></span>
+        </button>
+        <button class="btn btn-action btn-hint" data-action="hint" id="hintBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 18h6M10 22h4M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17H8v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          <span data-i18n="nudge">Hint</span>
+          <span class="hint-count" id="hintCount">3</span>
+        </button>
+        <button class="btn btn-action btn-rewarded" data-action="watchAdHint" id="watchAdHintBtn" hidden>
+          <svg viewBox="0 0 24 24" width="18" height="18"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+          <span data-i18n="watchAdHint">+1 Hint</span>
+        </button>
+        <button class="btn btn-action btn-giveup" data-action="giveUp" id="giveUpBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="giveUp">Give Up</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- RESULT -->
+    <div id="result" class="screen">
+      <div class="screen-inner result-inner">
+        <button class="btn-back" data-action="goHome" aria-label="Back">
+          <svg viewBox="0 0 24 24" width="24" height="24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="result-header">
+          <div class="result-emoji" id="resultEmoji"></div>
+          <h2 id="resultTitle" data-i18n="chainComplete"></h2>
+          <p class="result-subtitle" id="resultSubtitle"></p>
+          <div class="new-best" id="newBest" hidden>&#9733; <span data-i18n="newBestScore"></span></div>
+        </div>
+
+        <div class="result-score-hero">
+          <span class="result-score-value" id="resultScore">0</span>
+          <span class="result-score-label" data-i18n="score"></span>
+        </div>
+
+        <div class="result-stats-grid">
+          <div class="result-stat">
+            <span class="result-stat-val" id="resultChainLen">0</span>
+            <span class="result-stat-label" data-i18n="chain"></span>
+          </div>
+          <div class="result-stat">
+            <span class="result-stat-val" id="resultTime">0:00</span>
+            <span class="result-stat-label" data-i18n="time"></span>
+          </div>
+          <div class="result-stat" id="streakBonusRow" hidden>
+            <span class="result-stat-val" id="resultStreakBonus">0</span>
+            <span class="result-stat-label" data-i18n="streakBonus"></span>
+          </div>
+          <div class="result-stat" id="comboBonusRow" hidden>
+            <span class="result-stat-val" id="resultComboBonus">0</span>
+            <span class="result-stat-label" data-i18n="comboBonus">Combo</span>
+          </div>
+          <div class="result-stat" id="xpEarnedRow" hidden>
+            <span class="result-stat-val result-stat-xp" id="resultXPDetail"></span>
+            <span class="result-stat-label">XP</span>
+          </div>
+        </div>
+
+        <div class="result-extras">
+          <div class="score-breakdown" id="scoreBreakdown" hidden></div>
+          <div class="semantic-score" id="semanticScore" hidden></div>
+          <div class="percentile-display" id="percentileDisplay" hidden></div>
+          <div class="streak-title" id="streakTitle" hidden></div>
+          <div class="instinct-score" id="instinctScore" hidden></div>
+        </div>
+
+        <div class="result-chain" id="resultChain"></div>
+
+        <div class="game-review" id="gameReview" hidden></div>
+        <div class="daily-quests-result" id="dailyQuestsResult" hidden></div>
+
+        <div class="optimal-path" id="optimalPath" hidden>
+          <div class="op-label" id="optimalPathLabel" data-i18n="bestPath"></div>
+          <div class="op-comparison" id="optimalComparison" hidden>
+            <span class="op-yours" id="opYours"></span>
+            <span class="op-best" id="opBest"></span>
+          </div>
+          <div class="op-chain" id="optimalPathText"></div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn btn-rewarded btn-double-xp" data-action="doubleXp" id="doubleXpBtn" hidden>
+            <svg class="btn-svg" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+            <span data-i18n="doubleXp">Double XP</span>
+          </button>
+          <div class="result-actions-primary">
+            <button class="btn btn-primary" data-action="shareResult">
+              <svg class="btn-svg" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span data-i18n="share"></span>
+            </button>
+            <button class="btn btn-secondary" data-action="playAgain">
+              <span data-i18n="playAgain"></span>
+            </button>
+          </div>
+          <!-- Challenge friend — hidden for ultra-clean result -->
+        </div>
+
+        <div class="ad-banner-container" id="adBannerResult" hidden>
+          <div class="ad-banner-slot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div id="stats" class="screen">
+      <div class="screen-inner stats-scroll">
+        <h2 data-i18n="stats"></h2>
+
+        <!-- THIS WEEK -->
+        <div class="stats-zone">
+          <h3 class="stats-zone-title" data-i18n="thisWeek">This Week</h3>
+          <div class="weekly-heatmap" id="weeklyHeatmap" role="group" aria-label="Weekly activity heatmap"></div>
+        </div>
+
+        <!-- OVERVIEW -->
+        <div class="stats-zone">
+          <h3 class="stats-zone-title" data-i18n="overview">Overview</h3>
+          <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+              <div class="stat-value" id="statPlayed">0</div>
+              <div class="stat-label" data-i18n="played"></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="statWinRate">0%</div>
+              <div class="stat-label" data-i18n="winRate">Win Rate</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="statStreak">0</div>
+              <div class="stat-label" data-i18n="streak"></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="statMaxStreak">0</div>
+              <div class="stat-label" data-i18n="maxStreak"></div>
+            </div>
+          </div>
+          <!-- rating distribution hidden -->
+        <div class="stats-rating-dist" id="ratingDistribution" hidden></div>
+          <div class="stats-grid stats-grid-2" style="margin-top:12px">
+            <div class="stat-card">
+              <div class="stat-value" id="statBestScore">0</div>
+              <div class="stat-label" data-i18n="bestScore"></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="statBestTime">--</div>
+              <div class="stat-label" data-i18n="bestTimeLabel">Best Time</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACHIEVEMENTS -->
+        <div class="achievements-section">
+          <h3 data-i18n="achievements"></h3>
+          <div class="achievements-grid" id="achievementsGrid"></div>
+        </div>
+
+        <!-- Hidden stubs for JS references -->
+        <div hidden id="leaderboardSection"><div id="leaderboardList"></div></div>
+        <div hidden id="narrativeStats"></div>
+        <canvas hidden id="sparklineCanvas" width="0" height="0"></canvas>
+        <div hidden id="statAvgCreativity"></div>
+        <div hidden id="statLangsUsed"></div>
+        <div hidden id="statTotalScore"></div>
+        <div hidden id="statCollectionProgress"></div>
+        <div hidden id="statTotalTime"></div>
+        <div hidden id="profileCompleteness"></div>
+        <div hidden id="scoreHistory"></div>
+        <div hidden id="wordDnaSection"><canvas id="wordDnaCanvas" width="0" height="0"></canvas></div>
+        <div hidden id="weeklyRecap"></div>
+      </div>
+    </div>
+
+    <!-- COLLECTION -->
+    <div id="collection" class="screen" role="region" aria-label="Word Collection">
+      <div class="screen-inner collection-scroll">
+        <h2 data-i18n="wordCollection">Word Collection</h2>
+        <div class="collection-summary" id="collectionSummary" role="status" aria-live="polite"></div>
+        <div class="collection-groups" id="collectionGroups" role="list" aria-label="Semantic groups"></div>
+        <div class="collection-detail-overlay hidden" id="collectionDetail"></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="settings" class="screen">
+      <div class="screen-inner settings-scroll">
+        <h2 data-i18n="settings"></h2>
+
+        <!-- GAME -->
+        <div class="settings-section-title">Game</div>
+
+        <div class="setting-group">
+          <label for="langSelect" data-i18n="language"></label>
+          <select id="langSelect" data-action="changeLang"></select>
+        </div>
+
+        <div class="setting-group">
+          <span id="showGroupsLabel" class="setting-label" data-i18n="showThemeColors">Show Theme Colors</span>
+          <div class="toggle-group" id="showGroupsToggle" role="group" aria-labelledby="showGroupsLabel">
+            <button class="toggle-btn" data-value="on">On</button>
+            <button class="toggle-btn active" data-value="off">Off</button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <span id="notificationsLabel" class="setting-label" data-i18n="notifications">Notifications</span>
+          <div class="toggle-group" id="notificationsToggle" role="group" aria-labelledby="notificationsLabel">
+            <button class="toggle-btn active" data-value="on" data-i18n="on"></button>
+            <button class="toggle-btn" data-value="off" data-i18n="off"></button>
+          </div>
+        </div>
+
+        <!-- LOOK & FEEL -->
+        <div class="settings-section-title" data-i18n="lookAndFeel">Look & Feel</div>
+
+        <div class="setting-group">
+          <span class="setting-label" data-i18n="colorTheme">Color Theme</span>
+          <div class="cosmetic-theme-selector" id="cosmeticThemeSelector"></div>
+        </div>
+
+        <div class="setting-group">
+          <span id="themeLabel" class="setting-label" data-i18n="theme"></span>
+          <div class="toggle-group" id="themeToggle" role="group" aria-labelledby="themeLabel">
+            <button class="toggle-btn active" data-value="dark" data-i18n="dark"></button>
+            <button class="toggle-btn" data-value="light" data-i18n="light"></button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <span id="soundLabel" class="setting-label" data-i18n="sound"></span>
+          <div class="toggle-group" id="soundToggle" role="group" aria-labelledby="soundLabel">
+            <button class="toggle-btn active" data-value="on" data-i18n="on"></button>
+            <button class="toggle-btn" data-value="off" data-i18n="off"></button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <span id="hapticsLabel" class="setting-label" data-i18n="haptics"></span>
+          <div class="toggle-group" id="hapticsToggle" role="group" aria-labelledby="hapticsLabel">
+            <button class="toggle-btn active" data-value="on" data-i18n="on"></button>
+            <button class="toggle-btn" data-value="off" data-i18n="off"></button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <span id="reduceMotionLabel" class="setting-label" data-i18n="reduceMotion"></span>
+          <div class="toggle-group" id="reduceMotionToggle" role="group" aria-labelledby="reduceMotionLabel">
+            <button class="toggle-btn" data-value="on" data-i18n="on"></button>
+            <button class="toggle-btn active" data-value="off" data-i18n="off"></button>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <span id="highContrastLabel" class="setting-label" data-i18n="highContrast">High Contrast</span>
+          <div class="toggle-group" id="highContrastToggle" role="group" aria-labelledby="highContrastLabel">
+            <button class="toggle-btn" data-value="on" data-i18n="on"></button>
+            <button class="toggle-btn active" data-value="off" data-i18n="off"></button>
+          </div>
+        </div>
+
+        <!-- ACCOUNT -->
+        <div class="settings-section-title" data-i18n="account">Account</div>
+
+        <div class="setting-group account-section" id="accountSection" hidden>
+          <div id="accountLoggedOut">
+            <p class="auth-subtitle" data-i18n="signInSubtitle">Sign in to sync progress across devices</p>
+            <div class="auth-buttons">
+              <button class="btn-auth btn-google" data-action="signInGoogle">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 001 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                <span data-i18n="signInGoogle">Sign in with Google</span>
+              </button>
+              <button class="btn-auth btn-apple" data-action="signInApple">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="currentColor"/></svg>
+                <span data-i18n="signInApple">Sign in with Apple</span>
+              </button>
+              <button class="btn-auth btn-facebook" data-action="signInFacebook">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="currentColor"/></svg>
+                <span data-i18n="signInFacebook">Sign in with Facebook</span>
+              </button>
+            </div>
+            <p class="auth-error" id="authError" hidden></p>
+          </div>
+
+          <div id="accountLoggedIn" hidden>
+            <div class="account-card">
+              <div class="account-avatar" id="accountAvatar"></div>
+              <div class="account-info">
+                <div class="account-name" id="accountName"></div>
+                <div class="account-email" id="accountEmail"></div>
+              </div>
+            </div>
+            <div class="account-actions">
+              <button class="btn btn-ghost btn-sm" data-action="signOut" data-i18n="signOutBtn">Sign Out</button>
+              <button class="btn btn-ghost btn-sm btn-danger" data-action="deleteAccount" data-i18n="deleteAccount">Delete Account</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ABOUT -->
+        <div class="settings-section-title">About</div>
+
+        <div class="settings-links">
+          <button class="settings-link-btn" data-action="rateApp">
+            <svg viewBox="0 0 24 24" width="18" height="18"><polygon points="12,2 15,9 22,9 16.5,14 18.5,21 12,17 5.5,21 7.5,14 2,9 9,9" fill="currentColor" opacity=".6"/></svg>
+            <span data-i18n="rateApp">Rate LinkWords</span>
+          </button>
+          <button class="settings-link-btn" data-action="contactSupport">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+            <span data-i18n="helpSupport">Help & Support</span>
+          </button>
+          <a class="settings-link-btn" href="/privacy.html" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+            <span data-i18n="privacyPolicy">Privacy Policy</span>
+          </a>
+          <a class="settings-link-btn" href="/terms.html" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" fill="none"/><polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2" fill="none"/><line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2"/><line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2"/></svg>
+            <span data-i18n="termsOfService">Terms of Service</span>
+          </a>
+        </div>
+        <!-- Hidden stubs for JS references -->
+        <div hidden id="removeAdsBtn"></div>
+        <div hidden id="restorePurchasesBtn"></div>
+        <div hidden id="ccpaBtn"></div>
+
+        <div class="setting-footer">
+          <p class="version">LinkWords v3.0</p>
+          <p class="player-id-footer"><span data-i18n="playerId">Player ID</span>: <span class="mono" id="userId"></span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIVACY MANAGER -->
+    <div id="privacyManager" class="screen">
+      <div class="screen-inner">
+        <button class="btn-back" data-action="goBack" aria-label="Back">
+          <svg viewBox="0 0 24 24" width="24" height="24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h2 data-i18n="managePrivacy">Manage Privacy</h2>
+
+        <div class="privacy-section">
+          <p class="privacy-desc" data-i18n="privacyDesc">Choose how your data is used. Essential data storage (game progress) is always active.</p>
+
+          <div class="privacy-toggle-row">
+            <div class="privacy-toggle-info">
+              <span class="privacy-toggle-title" data-i18n="privacyEssential">Essential</span>
+              <span class="privacy-toggle-desc" data-i18n="privacyEssentialDesc">Game saves, settings, preferences</span>
+            </div>
+            <div class="privacy-toggle-switch always-on" data-i18n="alwaysOn">Always on</div>
+          </div>
+
+          <div class="privacy-toggle-row">
+            <div class="privacy-toggle-info">
+              <span class="privacy-toggle-title" id="privacyAnalyticsLabel" data-i18n="privacyAnalyticsTitle">Analytics</span>
+              <span class="privacy-toggle-desc" data-i18n="privacyAnalyticsDesc">Help us improve the game experience</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="privacyAnalytics" aria-labelledby="privacyAnalyticsLabel">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="privacy-toggle-row">
+            <div class="privacy-toggle-info">
+              <span class="privacy-toggle-title" id="privacyPersonalizationLabel" data-i18n="privacyPersonalizationTitle">Personalization</span>
+              <span class="privacy-toggle-desc" data-i18n="privacyPersonalizationDesc">Tailored content and recommendations</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="privacyPersonalization" aria-labelledby="privacyPersonalizationLabel">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-save-privacy" data-action="savePrivacy">
+          <span data-i18n="savePreferences">Save Preferences</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav id="bottomNav" class="bottom-nav hidden" aria-label="Main navigation">
+    <button class="nav-tab" data-nav="menu" aria-label="Home">
+      <svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-2 0h2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-i18n="navHome">Home</span>
+    </button>
+    <button class="nav-tab" data-nav="stats" aria-label="Stats">
+      <svg viewBox="0 0 24 24" width="24" height="24"><rect x="4" y="12" width="4" height="8" rx="1" fill="currentColor" opacity=".5"/><rect x="10" y="8" width="4" height="12" rx="1" fill="currentColor" opacity=".7"/><rect x="16" y="4" width="4" height="16" rx="1" fill="currentColor"/></svg>
+      <span data-i18n="navStats">Stats</span>
+    </button>
+    <button class="nav-tab" data-nav="collection" aria-label="Collection">
+      <svg viewBox="0 0 24 24" width="24" height="24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-i18n="navCollection">Collection</span>
+    </button>
+    <button class="nav-tab" data-nav="settings" aria-label="Settings">
+      <svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" fill="none"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+      <span data-i18n="navSettings">Settings</span>
+    </button>
+  </nav>
+
+  <!-- ONBOARDING TUTORIAL OVERLAY -->
+  <div id="onboarding" class="onboarding-overlay" hidden role="dialog" aria-modal="true" aria-label="Tutorial">
+    <div class="onboarding-backdrop" id="onboardingBackdrop"></div>
+    <div class="onboarding-spotlight" id="onboardingSpotlight"></div>
+    <div class="onboarding-tooltip" id="onboardingTooltip">
+      <p class="onboarding-text" id="onboardingText"></p>
+      <div class="onboarding-footer">
+        <div class="onboarding-dots" id="onboardingDots"></div>
+        <div class="onboarding-actions">
+          <button class="onboarding-btn onboarding-skip" id="onboardingSkip" data-i18n="obSkip"></button>
+          <button class="onboarding-btn onboarding-next" id="onboardingNext" data-i18n="obNext"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalText">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content" tabindex="-1">
+      <p id="modalText"></p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" data-action="modalCancel" data-i18n="back"></button>
+        <button class="btn btn-primary" data-action="modalConfirm" data-i18n="confirm"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GDPR CONSENT BANNER -->
+  <div id="gdprBanner" class="gdpr-banner" role="alertdialog" aria-label="Cookie consent" hidden>
+    <div class="gdpr-inner">
+      <div class="gdpr-icon">
+        <svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+      </div>
+      <p class="gdpr-text" data-i18n="gdprText">We use essential storage for game saves. Optional analytics help us improve the game. You can change this anytime in Settings.</p>
+      <div class="gdpr-actions">
+        <button class="btn btn-ghost btn-sm" data-action="gdprReject" data-i18n="gdprReject">Reject Optional</button>
+        <button class="btn btn-ghost btn-sm" data-action="gdprManage" data-i18n="gdprManage">Manage</button>
+        <button class="btn btn-primary btn-sm" data-action="gdprAcceptAll" data-i18n="gdprAcceptAll">Accept All</button>
+      </div>
+      <div class="gdpr-links">
+        <a href="https://linkwords.app/privacy" target="_blank" rel="noopener" data-i18n="privacyPolicy">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="data-core.js" defer></script>
+  <script src="i18n-strings.js" defer></script>
+  <script src="lw-graph.js" defer></script>
+  <script src="lw-scoring.js" defer></script>
+  <script src="lw-i18n.js" defer></script>
+  <script src="lw-audio.js" defer></script>
+  <script src="lw-collection.js" defer></script>
+  <script src="auth.js" defer></script>
+  <script src="ads.js" defer></script>
+  <script src="game.js" defer></script>
+</body>
+</html>

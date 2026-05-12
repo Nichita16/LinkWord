@@ -1,0 +1,31 @@
+{
+  "name": "linkwords",
+  "version": "2.3.0",
+  "description": "Link words, build chains. A daily word association puzzle game.",
+  "private": true,
+  "scripts": {
+    "cap:init": "cap init LinkWords com.linkwords.app --web-dir .",
+    "cap:add:ios": "cap add ios",
+    "cap:add:android": "cap add android",
+    "cap:sync": "cap sync",
+    "cap:open:ios": "cap open ios",
+    "cap:open:android": "cap open android",
+    "prebuild": "node scripts/build.js",
+    "minify": "npx terser game.js -c -m -o game.min.js && npx terser data-core.js -c -m -o data-core.min.js && npx terser auth.js -c -m -o auth.min.js && npx terser ads.js -c -m -o ads.min.js && npx terser i18n-strings.js -c -m -o i18n-strings.min.js && npx terser lw-graph.js -c -m -o lw-graph.min.js && npx terser lw-scoring.js -c -m -o lw-scoring.min.js && npx terser lw-i18n.js -c -m -o lw-i18n.min.js && npx terser lw-audio.js -c -m -o lw-audio.min.js && npx cssnano style.css style.min.css",
+    "build": "npm run minify",
+    "deploy": "npm run build && firebase deploy"
+  },
+  "dependencies": {
+    "@capacitor/core": "^7.2.0",
+    "@capacitor/app": "^7.0.0",
+    "@capacitor/haptics": "^7.0.0",
+    "@capacitor/status-bar": "^7.0.0",
+    "@capacitor/splash-screen": "^7.0.0",
+    "@capacitor-firebase/authentication": "^7.2.0",
+    "@nicedash/capacitor-admob": "^6.0.0",
+    "@capgo/capacitor-purchases": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.2.0"
+  }
+}
