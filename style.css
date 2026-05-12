@@ -2714,7 +2714,6 @@ html, body {
 
 /* Day palette hints */
 [data-dow-palette] .word-cell.connectable { border-color: var(--dow-accent, var(--accent)); }
-[data-dow-palette] .chain-node.mid { background: var(--dow-accent, var(--accent)); }
 [data-dow-palette="sun-gold"] { --dow-accent: #ffd60a; }
 [data-dow-palette="moon-silver"] { --dow-accent: #8888a0; }
 [data-dow-palette="earth-green"] { --dow-accent: var(--forest); }
