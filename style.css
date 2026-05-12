@@ -349,7 +349,8 @@ html, body {
   gap: 0 !important;
   justify-content: flex-start;
   align-items: stretch !important;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 0 0 90px !important;
   max-width: 100% !important;
 }
@@ -538,9 +539,9 @@ html, body {
   flex: 1;
   appearance: none;
   cursor: pointer;
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.06);
+  color: var(--bg);
+  border: 1px solid rgba(0,0,0,0.10);
   border-radius: 10px;
   padding: 8px 4px;
   display: flex;
@@ -555,6 +556,7 @@ html, body {
 }
 .hero-diff .diff-btn.active {
   background: linear-gradient(135deg, #6D28D9, #A855F7);
+  color: #fff;
   border-color: transparent;
   box-shadow: 0 4px 14px -4px rgba(168,85,247,0.5);
 }
@@ -565,15 +567,15 @@ html, body {
 .diff-dots i {
   width: 5px; height: 5px;
   border-radius: 3px;
-  background: rgba(255,255,255,0.18);
+  background: rgba(0,0,0,0.15);
   display: block;
 }
 .hero-diff .diff-btn[data-diff="easy"] .diff-dots i { background: var(--forest); }
 .hero-diff .diff-btn[data-diff="medium"] .diff-dots i { background: var(--amber); }
 .hero-diff .diff-btn[data-diff="hard"] .diff-dots i { background: var(--plum); }
-.hero-diff .diff-btn:not(.active) .diff-dots i:nth-child(n+2) { background: rgba(255,255,255,0.18); }
-.hero-diff .diff-btn[data-diff="easy"]:not(.active) .diff-dots i:nth-child(n+2) { background: rgba(255,255,255,0.18); }
-.hero-diff .diff-btn[data-diff="medium"]:not(.active) .diff-dots i:nth-child(n+3) { background: rgba(255,255,255,0.18); }
+.hero-diff .diff-btn:not(.active) .diff-dots i:nth-child(n+2) { background: rgba(0,0,0,0.15); }
+.hero-diff .diff-btn[data-diff="easy"]:not(.active) .diff-dots i:nth-child(n+2) { background: rgba(0,0,0,0.15); }
+.hero-diff .diff-btn[data-diff="medium"]:not(.active) .diff-dots i:nth-child(n+3) { background: rgba(0,0,0,0.15); }
 
 /* Hero CTA */
 .hero-cta {
@@ -647,26 +649,25 @@ html, body {
 /* Mode cards */
 .mode-cards {
   margin-top: 12px;
-  flex: 1;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   gap: 7px;
   width: 100%;
-  min-height: 0;
 }
 
 .mode-card {
-  flex: 1;
+  flex: 0 0 auto;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 0 14px;
+  padding: 14px;
   display: flex;
   align-items: center;
   gap: 12px;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
-  min-height: 0;
+  min-height: 56px;
   appearance: none;
   color: var(--ink);
   font-family: var(--font-sans);
@@ -1639,6 +1640,7 @@ html, body {
 /* ============ STATS ============ */
 .stats-scroll {
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   padding-bottom: calc(24px + var(--safe-bottom));
 }
@@ -1792,6 +1794,7 @@ html, body {
   letter-spacing: 0.16em;
   color: var(--muted);
   margin-bottom: 10px;
+  grid-column: 1 / -1;
 }
 
 .achievements-grid {
@@ -1807,6 +1810,14 @@ html, body {
   font-weight: 700;
   color: var(--muted);
   padding: 4px 0;
+}
+.ach-category-header {
+  grid-column: 1 / -1;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-2);
+  padding: 10px 0 4px;
 }
 .achievement {
   aspect-ratio: 1;
@@ -2315,15 +2326,85 @@ html, body {
 .menu-bottom-row,
 .theme-subtitle,
 .ach-progress, .ach-progress-fill, .ach-progress-label,
-.word-dna-section, .weekly-recap,
+.word-dna-section,
 .lb-teaser, .leaderboard-section, .leaderboard-list, .lb-row,
 .scoring-guide, .kb-shortcuts,
 .archive-overlay, .archive-panel,
 .lives-pill, .lives-toggle,
 .path-efficiency,
 .daily-inline-score, .btn-promoted,
-.next-daily-countdown, .countdown-label, .countdown-time
-{ /* legacy — keep for JS compat */ }
+.next-daily-countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 0;
+  font-family: var(--font-sans);
+}
+.countdown-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.countdown-time {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.next-daily-timer {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  padding: 8px 0;
+}
+.daily-mode-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+.quest-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.quest-row.quest-done { color: var(--green); }
+.quest-row.quest-miss { color: var(--muted); }
+#dailyQuestsResult h4 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.weekly-recap {
+  width: 100%;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+}
+.weekly-recap h4 {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.recap-stats {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-2);
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
 
 .btn-play-big, .btn-practice, .btn-extra-mode, .btn-bonus, .menu-modes-row, .menu-difficulty, .btn-howto-mini,
 .menu-header h1, .difficulty-selector:not(.hero-diff),
@@ -2524,6 +2605,31 @@ html, body {
   /* Desktop result: wider */
   .result-score-value { font-size: 88px; }
   .result-headline { font-size: 38px; }
+
+  /* Desktop stats: wider layout */
+  #stats .screen-inner, #collection .screen-inner, #settings .screen-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .stats-grid { grid-template-columns: repeat(3, 1fr); }
+  .stats-grid-2 { grid-template-columns: repeat(3, 1fr); }
+  .achievements-grid { grid-template-columns: repeat(5, 1fr); }
+  .achievement { aspect-ratio: auto; padding: 14px 8px; }
+  .achievement .ach-icon { font-size: 22px; }
+  .achievement .ach-name { font-size: 11px; }
+  .achievement .ach-desc { font-size: 11px; }
+
+  /* Desktop help: center content */
+  #howto .screen-inner {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .howto-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .tutorial-slide { padding: 24px; }
 }
 
 @media (max-width: 319px) {

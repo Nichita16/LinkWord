@@ -2871,9 +2871,9 @@
       el.addEventListener('animationend', () => el.style.removeProperty('--row-delay'), { once: true });
     });
 
-    if (state.mode === 'daily') {
+    if (state.mode === 'daily' && !document.getElementById('nextDailyCountdown')) {
       startNextDailyCountdown();
-    } else {
+    } else if (state.mode !== 'daily') {
       // Hide daily-only elements when not in daily mode
       const timerEl = document.getElementById('nextDailyTimer');
       if (timerEl) timerEl.hidden = true;
@@ -2926,7 +2926,8 @@
       const done = q.check();
       const row = document.createElement('div');
       row.className = `quest-row ${done ? 'quest-done' : 'quest-miss'}`;
-      row.innerHTML = `<span>${done ? '✓' : '○'} ${t(q.key) || q.id}</span><span>${done ? '+50 XP' : ''}</span>`;
+      let qText = (t(q.key) || q.id).replace('{n}', '3');
+      row.innerHTML = `<span>${done ? '✓' : '○'} ${qText}</span><span>${done ? '+50 XP' : ''}</span>`;
       el.appendChild(row);
     }
   }
@@ -3836,19 +3837,26 @@
   // ═══════════════════════════════════════════
   function syncSettings() {
     populateLanguageSelect();
-    syncToggle('themeToggle', state.theme);
-    syncToggle('soundToggle', state.sound ? 'on' : 'off');
-    syncToggle('hapticsToggle', state.haptics ? 'on' : 'off');
-    syncToggle('reduceMotionToggle', state.reduceMotion ? 'on' : 'off');
-    syncToggle('notificationsToggle', state.notifications ? 'on' : 'off');
-    syncToggle('highContrastToggle', state.highContrast ? 'on' : 'off');
-    syncToggle('showGroupsToggle', state.showGroups ? 'on' : 'off');
+    syncSwitch('themeSwitch', state.theme === 'light');
+    syncSwitch('soundSwitch', state.sound);
+    syncSwitch('hapticsSwitch', state.haptics);
+    syncSwitch('reduceMotionSwitch', state.reduceMotion);
+    syncSwitch('notificationsSwitch', state.notifications);
+    syncSwitch('highContrastSwitch', state.highContrast);
+    syncSwitch('showGroupsSwitch', state.showGroups);
     renderCosmeticThemeSelector();
     syncDifficulty();
     if (window.LinkAuth) {
       const uid = document.getElementById('userId');
       if (uid) uid.textContent = window.LinkAuth.getUserId();
     }
+  }
+
+  function syncSwitch(id, checked) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const input = el.querySelector('input');
+    if (input) input.checked = !!checked;
   }
 
   function syncToggle(id, value) {
@@ -4341,7 +4349,7 @@
     const weekScores = (s.scores || []).slice(-7);
     const weekAvg = weekScores.length ? Math.round(weekScores.reduce((a, b) => a + b, 0) / weekScores.length) : 0;
     const weekBest = weekScores.length ? Math.max(...weekScores) : 0;
-    el.innerHTML = `<h4>${t('weekInLinks') || 'Week in Links'}</h4><div class="recap-stats"><span>${t('statPlayed') || 'Played'}: ${weekScores.length}</span><span>Avg: ${weekAvg}</span><span>Best: ${weekBest}</span></div>`;
+    el.innerHTML = `<h4>${t('weekInLinks') || 'Your Week in Links'}</h4><div class="recap-stats"><span>${t('statPlayed') || 'Played'}: ${weekScores.length}</span> · <span>Avg: ${weekAvg}</span> · <span>Best: ${weekBest}</span></div>`;
   }
 
   // ═══════════════════════════════════════════
@@ -4892,39 +4900,23 @@
       });
     }
 
-    // Toggle groups
-    document.querySelectorAll('.toggle-group').forEach(group => {
-      group.addEventListener('click', (e) => {
-        const btn = e.target.closest('.toggle-btn');
-        if (!btn) return;
-
-        group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const val = btn.dataset.value;
-        const id = group.id;
-
-        if (id === 'themeToggle') {
-          state.theme = val;
-          applyTheme();
-        } else if (id === 'soundToggle') {
-          state.sound = val === 'on';
-          document.body.classList.toggle('sound-off', !state.sound);
-        } else if (id === 'hapticsToggle') {
-          state.haptics = val === 'on';
-        } else if (id === 'reduceMotionToggle') {
-          state.reduceMotion = val === 'on';
-          document.documentElement.classList.toggle('reduce-motion', state.reduceMotion);
-        } else if (id === 'notificationsToggle') {
-          state.notifications = val === 'on';
-          if (state.notifications) requestNotificationPermission();
-        } else if (id === 'highContrastToggle') {
-          state.highContrast = val === 'on';
-          document.documentElement.classList.toggle('high-contrast', state.highContrast);
-        } else if (id === 'showGroupsToggle') {
-          state.showGroups = val === 'on';
-          document.querySelectorAll('.group-dot').forEach(d => d.hidden = !state.showGroups);
-        }
+    // Settings switches (iOS-style toggles)
+    const switchHandlers = {
+      themeSwitch: (on) => { state.theme = on ? 'light' : 'dark'; applyTheme(); },
+      soundSwitch: (on) => { state.sound = on; document.body.classList.toggle('sound-off', !on); },
+      hapticsSwitch: (on) => { state.haptics = on; },
+      reduceMotionSwitch: (on) => { state.reduceMotion = on; document.documentElement.classList.toggle('reduce-motion', on); },
+      notificationsSwitch: (on) => { state.notifications = on; if (on) requestNotificationPermission(); },
+      highContrastSwitch: (on) => { state.highContrast = on; document.documentElement.classList.toggle('high-contrast', on); },
+      showGroupsSwitch: (on) => { state.showGroups = on; document.querySelectorAll('.group-dot').forEach(d => d.hidden = !on); },
+    };
+    Object.keys(switchHandlers).forEach(id => {
+      const sw = document.getElementById(id);
+      if (!sw) return;
+      const input = sw.querySelector('input');
+      if (!input) return;
+      input.addEventListener('change', () => {
+        switchHandlers[id](input.checked);
         save();
       });
     });
