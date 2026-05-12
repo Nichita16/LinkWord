@@ -1263,11 +1263,11 @@ html, body {
 }
 .chain-node.start { background: var(--brand-gradient); }
 .chain-node.end { background: var(--ink); color: var(--bg); }
-.chain-node.mid { background: linear-gradient(135deg, var(--primary), var(--accent2)); }
-.chain-node.tone-inkblue { background: rgba(34,211,238,0.2); color: var(--ink-blue); border-color: var(--ink-blue); }
-.chain-node.tone-plum { background: rgba(168,85,247,0.2); color: var(--plum); border-color: var(--plum); }
-.chain-node.tone-forest { background: rgba(52,211,153,0.2); color: var(--forest); border-color: var(--forest); }
-.chain-node.tone-amber { background: rgba(168,85,247,0.2); color: var(--amber); border-color: var(--amber); }
+.chain-node.mid { background: #7C3AED; color: #fff; border-color: transparent; }
+.chain-node.tone-inkblue { background: #0E7490; color: #fff; border-color: transparent; }
+.chain-node.tone-plum { background: #7C3AED; color: #fff; border-color: transparent; }
+.chain-node.tone-forest { background: #047857; color: #fff; border-color: transparent; }
+.chain-node.tone-amber { background: #7E22CE; color: #fff; border-color: transparent; }
 
 .chain-arrow {
   color: var(--muted-2);
