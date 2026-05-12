@@ -172,6 +172,12 @@ html, body {
 }
 
 #game { justify-content: flex-start; }
+#menu { justify-content: flex-start; align-items: stretch; }
+#result { justify-content: flex-start; align-items: stretch; }
+#stats { justify-content: flex-start; align-items: stretch; }
+#collection { justify-content: flex-start; align-items: stretch; }
+#settings { justify-content: flex-start; align-items: stretch; }
+#howto { justify-content: flex-start; align-items: stretch; }
 
 .screen.exit {
   opacity: 0;
@@ -305,8 +311,10 @@ html, body {
 .menu-inner {
   gap: 0 !important;
   justify-content: flex-start;
+  align-items: stretch !important;
   overflow: hidden;
-  padding: 0;
+  padding: 0 0 90px !important;
+  max-width: 100% !important;
 }
 
 .menu-top {
@@ -384,8 +392,8 @@ html, body {
 
 /* Hero Card */
 .hero-card {
-  background: var(--ink);
-  color: var(--bg);
+  background: #1A0B2E;
+  color: #FAF7FF;
   border-radius: var(--radius-lg);
   padding: 18px 20px 16px;
   position: relative;
@@ -393,9 +401,6 @@ html, body {
   box-shadow: var(--shadow-lg);
   width: 100%;
   flex-shrink: 0;
-}
-[data-theme="light"] .hero-card {
-  color: #FAF7FF;
 }
 
 .hero-watermark {
@@ -468,8 +473,8 @@ html, body {
   display: block;
 }
 .hero-end {
-  background: var(--bg);
-  color: var(--ink);
+  background: #0F0820;
+  color: #F5F0FA;
   padding: 9px 13px;
   border-radius: 11px;
   font-family: var(--font-display);
@@ -477,6 +482,10 @@ html, body {
   font-size: 13px;
   letter-spacing: 0.04em;
   flex-shrink: 0;
+}
+[data-theme="light"] .hero-end {
+  background: var(--paper);
+  color: var(--ink);
 }
 
 /* Difficulty inside hero */
@@ -729,6 +738,7 @@ html, body {
 .howto-inner {
   gap: 0 !important;
   padding: 0;
+  align-items: stretch !important;
 }
 .howto-header {
   display: flex;
@@ -1303,8 +1313,9 @@ html, body {
 /* ============ RESULT ============ */
 .result-inner {
   justify-content: flex-start;
+  align-items: stretch !important;
   gap: 0 !important;
-  padding: 0;
+  padding: 0 0 90px !important;
 }
 
 .result-top {
@@ -1500,8 +1511,8 @@ html, body {
 
 /* Streak hero */
 .stats-streak-hero {
-  background: var(--ink);
-  color: var(--bg);
+  background: #1A0B2E;
+  color: #FAF7FF;
   border-radius: var(--radius-lg);
   padding: 18px;
   margin-bottom: 18px;
@@ -2279,8 +2290,8 @@ html, body {
   .word-cell { font-size: 16px; padding: 16px 10px; }
   .bottom-nav { max-width: 560px; left: 50%; transform: translateX(-50%); border-radius: var(--radius) var(--radius) 0 0; }
   .stats-grid { grid-template-columns: repeat(4, 1fr); }
-  .mode-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .mode-card { margin-bottom: 0; }
+  .mode-cards { gap: 8px; }
+  .mode-card { min-height: 48px; }
 }
 
 @media (min-width: 1024px) {
