@@ -1962,6 +1962,11 @@ html, body {
   flex-direction: column;
   gap: 8px;
 }
+.setting-group:has(.switch) {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
 .setting-group label,
 .setting-group .setting-label {
   font-family: var(--font-sans);
