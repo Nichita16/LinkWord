@@ -430,13 +430,13 @@ html, body {
 
 /* Hero Card */
 .hero-card {
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   padding: 18px 20px 16px;
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-lg);
   width: 100%;
   flex-shrink: 0;
 }
@@ -517,8 +517,8 @@ html, body {
   display: block;
 }
 .hero-end {
-  background: var(--bg);
-  color: var(--ink);
+  background: var(--ink);
+  color: var(--bg);
   padding: 9px 13px;
   border-radius: 11px;
   font-family: var(--font-display);
@@ -539,9 +539,9 @@ html, body {
   flex: 1;
   appearance: none;
   cursor: pointer;
-  background: rgba(0,0,0,0.12);
-  color: #222;
-  border: 2px solid rgba(0,0,0,0.22);
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
   border-radius: 10px;
   padding: 8px 4px;
   display: flex;
@@ -1166,7 +1166,7 @@ html, body {
 
 .score-pill { color: var(--accent-deep, var(--accent)); background: var(--accent-soft); border-color: transparent; }
 
-.combo-badge { display: none !important; }
+.combo-badge, .streak-freeze-badge { display: none !important; }
 .par-indicator, .paths-pill, .btn-rewarded, .floating-score, .combo-glow, .particle { display: none !important; }
 .score-breakdown, .semantic-score, .percentile-display, .instinct-score, .streak-title { display: none !important; }
 .game-review { display: none !important; }
@@ -2363,7 +2363,7 @@ html, body {
 .level-section, .level-badge, .xp-bar-wrap, .xp-bar, .xp-text,
 .daily-rings, .ring-item, .ring-svg, .ring-bg, .ring-fill, .ring-label,
 .weekly-cycle, .weekly-cycle-label, .weekly-cycle-dots, .weekly-cycle-dot, .weekly-cycle-bonus,
-.streak-tier-badge, .streak-freeze-badge,
+.streak-tier-badge,
 .ad-banner-container, .ad-banner-slot,
 .btn-rewarded, .btn-double-xp,
 .welcome-back-card, .wb-greeting, .wb-stats,
