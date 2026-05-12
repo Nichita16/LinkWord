@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#7209b7">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com https://pagead2.googlesyndication.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://accounts.google.com https://apis.google.com https://pagead2.googlesyndication.com https://*.firebaseapp.com; frame-ancestors 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com https://pagead2.googlesyndication.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://accounts.google.com https://apis.google.com https://pagead2.googlesyndication.com https://*.firebaseapp.com; frame-ancestors 'none';">
   <meta name="description" content="Link words, build chains. A daily word association puzzle game in 20 languages.">
   <meta property="og:title" content="LinkWords — Daily Word Association Puzzle">
   <meta property="og:description" content="Link words, build chains. A daily word association puzzle in 20 languages.">
@@ -27,6 +27,9 @@
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://apis.google.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
   <meta name="apple-mobile-web-app-title" content="LinkWords">
   <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192.svg">
   <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg">
@@ -83,31 +86,45 @@
 
     <!-- SPLASH -->
     <div id="splash" class="screen active">
+      <div class="splash-crossmarks">
+        <span class="splash-kicker" id="splashKicker">№ 1</span>
+        <span class="splash-date" id="splashDate"></span>
+      </div>
       <div class="splash-content">
         <div class="splash-logo">
-          <div class="splash-w">L</div>
+          <div class="splash-w">W</div>
         </div>
-        <p class="splash-title" aria-hidden="true">Link<span>Words</span></p>
-        <p class="splash-tagline" data-i18n="tagline"></p>
+        <p class="splash-title wm" aria-hidden="true">Link<em>Words</em></p>
+        <p class="splash-tagline" data-i18n="tagline">A daily chain of associations.</p>
         <div class="splash-loader" id="splashLoader"><div class="splash-loader-fill"></div></div>
-        <p class="splash-tap" id="splashTap" hidden data-i18n="tapToPlay">Tap to play</p>
+        <p class="splash-tap" id="splashTap" hidden data-i18n="tapToPlay">Tap to begin</p>
       </div>
+      <div class="splash-footer">ISSUE 3.0 · 20 LANGUAGES</div>
     </div>
 
     <!-- MENU -->
     <div id="menu" class="screen">
-      <div class="screen-inner">
+      <div class="screen-inner menu-inner">
         <div class="seasonal-banner" id="seasonalBanner" role="status" aria-live="polite" hidden></div>
-        <div class="menu-header">
+
+        <!-- Header row -->
+        <div class="menu-top">
           <div class="logo-mark" aria-hidden="true">W</div>
-          <h1>Link<span>Words</span></h1>
-          <button class="btn-howto-mini" data-action="showHowTo" aria-label="How to play">
-            <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><path d="M9 9a3 3 0 015.12 1c0 2-3 3-3 3M12 17h.01" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-          </button>
+          <div class="menu-top-right">
+            <div class="streak-pill" id="menuStreakPill"><span class="streak-pill-fire">🔥</span> <span id="menuStreakCount">0</span></div>
+            <button class="btn-icon" data-action="showHowTo" aria-label="How to play">
+              <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 16v.01M12 12a2 2 0 10-2-2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            </button>
+          </div>
         </div>
 
-        <div class="streak-strip" id="streakStrip" aria-label="Weekly streak"></div>
+        <!-- Masthead -->
+        <div class="masthead">
+          <span class="masthead-kicker" id="mastheadKicker">№ 1 · MON · MAY 12</span>
+          <span class="masthead-solved" id="mastheadSolved"></span>
+        </div>
 
+        <!-- Comeback banner -->
         <div class="comeback-banner" id="comebackBanner" hidden style="display:none">
           <div class="comeback-icon">🛡️</div>
           <div class="comeback-text">
@@ -117,50 +134,93 @@
           <button class="btn btn-accent btn-sm" data-action="startComeback" id="comebackBtn" data-i18n="comebackPlay">Play</button>
         </div>
 
-        <div class="menu-buttons">
-          <button class="btn btn-accent" id="continueBtn" data-action="resumeGame" hidden>
-            <svg class="btn-svg" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
-            <span data-i18n="continueGame">Continue</span>
-          </button>
-          <button class="btn btn-primary btn-play-big" data-action="startDaily">
-            <svg class="btn-svg" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
-            <span data-i18n="dailyPath">Daily Path</span>
-          </button>
-          <div class="menu-modes-row">
-            <button class="btn btn-ghost btn-practice" data-action="startEndless">
-              <span data-i18n="freeWeave">Free Weave</span>
+        <!-- Hero card -->
+        <div class="hero-card" id="heroCard">
+          <div class="hero-watermark">L</div>
+          <div class="hero-row-top">
+            <span class="hero-kicker" data-i18n="todaysTheme">TODAY'S THEME</span>
+            <span class="hero-live">● LIVE</span>
+          </div>
+          <div class="hero-theme wm" id="heroThemeName"><em data-i18n="dailyPath">Daily Path</em></div>
+
+          <div class="hero-endpoints">
+            <div class="hero-start" id="heroStartWord">WORD</div>
+            <div class="hero-line"><span></span><span></span><span></span></div>
+            <div class="hero-end" id="heroEndWord">WORD</div>
+          </div>
+
+          <div class="difficulty-selector hero-diff" id="difficultySelector" role="radiogroup" aria-label="Difficulty">
+            <button class="diff-btn" data-diff="easy" role="radio" aria-checked="false">
+              <span class="diff-dots"><i></i></span>
+              <span data-i18n="easy">Easy</span>
             </button>
-            <button class="btn btn-secondary btn-extra-mode" data-action="startBlitz" id="blitzBtn" hidden>
-              <svg class="btn-svg" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/></svg>
-              <span data-i18n="blitz"></span>
+            <button class="diff-btn active" data-diff="medium" role="radio" aria-checked="true">
+              <span class="diff-dots"><i></i><i></i></span>
+              <span data-i18n="medium">Medium</span>
+            </button>
+            <button class="diff-btn" data-diff="hard" role="radio" aria-checked="false">
+              <span class="diff-dots"><i></i><i></i><i></i></span>
+              <span data-i18n="hard">Hard</span>
             </button>
           </div>
-          <button class="btn btn-secondary btn-extra-mode btn-bonus" data-action="startBonus" id="bonusBtn" hidden>
-            <svg class="btn-svg" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/></svg>
-            <span data-i18n="bonus">Bonus</span>
+
+          <button class="btn btn-accent hero-cta" id="continueBtn" data-action="resumeGame" hidden>
+            <svg class="btn-svg" viewBox="0 0 24 24" width="14" height="14"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+            <span data-i18n="continueGame">Continue</span>
           </button>
-          <button class="btn btn-secondary btn-extra-mode" data-action="startWordRush" id="wordRushBtn" hidden>
-            <span data-i18n="wordRush">Word Rush</span>
-          </button>
-          <button class="btn btn-secondary btn-extra-mode" data-action="startWeeklyTrial" id="weeklyTrialBtn" hidden>
-            <span data-i18n="weeklyTrial">Weekly Trial</span>
+          <button class="btn btn-accent hero-cta" data-action="startDaily" id="dailyPlayBtn">
+            <svg class="btn-svg" viewBox="0 0 24 24" width="14" height="14"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
+            <span data-i18n="playTodaysPath">Play today's path</span>
           </button>
         </div>
 
-        <div class="difficulty-selector menu-difficulty" id="difficultySelector" role="radiogroup" aria-label="Difficulty">
-          <button class="diff-btn" data-diff="easy" role="radio" aria-checked="false" data-i18n="easy">Easy</button>
-          <button class="diff-btn active" data-diff="medium" role="radio" aria-checked="true" data-i18n="medium">Medium</button>
-          <button class="diff-btn" data-diff="hard" role="radio" aria-checked="false" data-i18n="hard">Hard</button>
+        <!-- Week streak strip -->
+        <div class="streak-strip" id="streakStrip" aria-label="Weekly streak"></div>
+
+        <!-- Mode cards -->
+        <div class="mode-cards">
+          <button class="mode-card mode-forest" data-action="startEndless">
+            <div class="mode-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+            <div class="mode-body">
+              <span class="mode-kicker" data-i18n="endlessKicker">ENDLESS · NO TIMER</span>
+              <span class="mode-title wm" data-i18n="freeWeave">Free Weave</span>
+            </div>
+            <svg class="mode-chevron" viewBox="0 0 24 24" width="14" height="14"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="mode-card mode-amber" data-action="startBlitz" id="blitzBtn">
+            <div class="mode-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg></div>
+            <div class="mode-body">
+              <span class="mode-kicker" data-i18n="blitzKicker">60 SECONDS</span>
+              <span class="mode-title wm" data-i18n="blitz">Blitz</span>
+            </div>
+            <svg class="mode-chevron" viewBox="0 0 24 24" width="14" height="14"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="mode-card mode-inkblue" data-action="startWeeklyTrial" id="weeklyTrialBtn">
+            <div class="mode-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M6 9l6-6 6 6M6 15l6 6 6-6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="mode-body">
+              <span class="mode-kicker" data-i18n="weeklyKicker">FRIDAY · 3 CHAINS</span>
+              <span class="mode-title wm" data-i18n="weeklyTrial">Weekly Trial</span>
+            </div>
+            <svg class="mode-chevron" viewBox="0 0 24 24" width="14" height="14"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="mode-card mode-plum" data-action="startWordRush" id="wordRushBtn">
+            <div class="mode-icon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg></div>
+            <div class="mode-body">
+              <span class="mode-kicker" data-i18n="rushKicker">BONUS · FIND THEM ALL</span>
+              <span class="mode-title wm" data-i18n="wordRush">Word Rush</span>
+            </div>
+            <svg class="mode-chevron" viewBox="0 0 24 24" width="14" height="14"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
 
         <!-- Hidden stubs for JS references -->
+        <div id="bonusBtn" hidden data-action="startBonus"></div>
         <div class="level-section" id="levelSection" hidden></div>
         <div class="welcome-back-card" id="welcomeBackCard" hidden></div>
         <div class="daily-rings" id="dailyRings" hidden></div>
         <div class="theme-subtitle" id="themeSubtitle" hidden></div>
         <div id="nextPuzzlePreview" hidden></div>
         <div id="archiveBtn" hidden></div>
-
         <div class="ad-banner-container" id="adBannerMenu" hidden>
           <div id="adBanner" class="ad-banner-slot"></div>
         </div>
@@ -169,31 +229,47 @@
 
     <!-- HOW TO PLAY -->
     <div id="howto" class="screen">
-      <div class="screen-inner">
-        <button class="btn-back" data-action="goBack" aria-label="Back">
-          <svg viewBox="0 0 24 24" width="24" height="24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+      <div class="screen-inner howto-inner">
+        <div class="howto-header">
+          <button class="btn-icon" data-action="goBack" aria-label="Close">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+          </button>
+          <span class="howto-label">HOW TO PLAY</span>
+          <button class="howto-skip" data-action="goBack">Skip</button>
+        </div>
         <div class="tutorial-slides" id="tutorialSlides">
           <div class="tutorial-slide active" data-slide="0">
-            <div class="tutorial-icon">
-              <svg viewBox="0 0 80 80" width="80" height="80"><circle cx="20" cy="40" r="14" fill="#f72585"/><line x1="34" y1="40" x2="46" y2="40" stroke="#7209b7" stroke-width="3" stroke-dasharray="4"/><circle cx="60" cy="40" r="14" fill="#4cc9f0"/></svg>
+            <div class="tutorial-step-kicker">STEP 01</div>
+            <h2 class="wm tutorial-headline" data-i18n="tutorial1Title">Start with a <em>word</em>.</h2>
+            <p class="tutorial-body" data-i18n="tutorial1Text">Every puzzle begins and ends with a fixed word. Your job: build a chain between them.</p>
+            <div class="tutorial-visual">
+              <div class="demo-pill demo-endpoint">OCEAN</div>
+              <div class="demo-line"><span>?</span></div>
+              <div class="demo-pill demo-endpoint">MEMORY</div>
             </div>
-            <h2 data-i18n="tutorial1Title"></h2>
-            <p data-i18n="tutorial1Text"></p>
           </div>
           <div class="tutorial-slide" data-slide="1">
-            <div class="tutorial-icon">
-              <svg viewBox="0 0 80 80" width="80" height="80"><circle cx="15" cy="40" r="10" fill="#f72585"/><line x1="25" y1="40" x2="30" y2="40" stroke="#7209b7" stroke-width="2"/><circle cx="40" cy="40" r="10" fill="#b5179e"/><line x1="50" y1="40" x2="55" y2="40" stroke="#7209b7" stroke-width="2"/><circle cx="65" cy="40" r="10" fill="#4cc9f0"/></svg>
+            <div class="tutorial-step-kicker">STEP 02</div>
+            <h2 class="wm tutorial-headline" data-i18n="tutorial2Title">Link by <em>association</em>.</h2>
+            <p class="tutorial-body" data-i18n="tutorial2Text">Pick a word that's naturally connected to the last one. WAVE → STORM → DREAM.</p>
+            <div class="tutorial-visual">
+              <div class="demo-pill demo-endpoint">OCEAN</div>
+              <div class="demo-connector"></div>
+              <div class="demo-pill demo-linked demo-inkblue">WAVE</div>
+              <div class="demo-connector"></div>
+              <div class="demo-pill demo-linked demo-plum">STORM</div>
+              <div class="demo-connector"></div>
+              <div class="demo-pill demo-endpoint">MEMORY</div>
             </div>
-            <h2 data-i18n="tutorial2Title"></h2>
-            <p data-i18n="tutorial2Text"></p>
           </div>
           <div class="tutorial-slide" data-slide="2">
-            <div class="tutorial-icon">
-              <svg viewBox="0 0 80 80" width="80" height="80"><polygon points="40,10 50,35 75,35 55,50 62,75 40,60 18,75 25,50 5,35 30,35" fill="#f8961e" opacity=".8"/><text x="40" y="52" text-anchor="middle" font-size="18" font-weight="bold" fill="white">+</text></svg>
+            <div class="tutorial-step-kicker">STEP 03</div>
+            <h2 class="wm tutorial-headline" data-i18n="tutorial3Title">Shorter is <em>sharper</em>.</h2>
+            <p class="tutorial-body" data-i18n="tutorial3Text">The fewer links you use, the higher your score. Hidden routes earn rare bonuses.</p>
+            <div class="tutorial-visual tutorial-score-demo">
+              <span class="demo-score wm">487</span>
+              <span class="demo-score-sub">3 links · par 4</span>
             </div>
-            <h2 data-i18n="tutorial3Title"></h2>
-            <p data-i18n="tutorial3Text"></p>
           </div>
         </div>
         <div class="tutorial-dots" id="tutorialDots">
@@ -202,7 +278,7 @@
           <span class="dot"></span>
         </div>
         <div class="tutorial-actions">
-          <button class="btn btn-primary" data-action="tutorialNext" data-i18n="next"></button>
+          <button class="btn btn-primary" data-action="tutorialNext" data-i18n="next">Next</button>
         </div>
       </div>
     </div>
@@ -278,29 +354,45 @@
     <!-- RESULT -->
     <div id="result" class="screen">
       <div class="screen-inner result-inner">
-        <button class="btn-back" data-action="goHome" aria-label="Back">
-          <svg viewBox="0 0 24 24" width="24" height="24"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+        <!-- Header -->
+        <div class="result-top">
+          <button class="btn-icon" data-action="goHome" aria-label="Back">
+            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <span class="result-kicker" id="resultKicker">№ 1 · SOLVED</span>
+          <button class="btn-icon" data-action="shareResult" aria-label="Share">
+            <svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+        <!-- Hero -->
         <div class="result-header">
-          <div class="result-emoji" id="resultEmoji"></div>
-          <h2 id="resultTitle" data-i18n="chainComplete"></h2>
+          <div class="result-complete-kicker" data-i18n="chainComplete">CHAIN COMPLETE</div>
+          <div class="result-emoji" id="resultEmoji" hidden></div>
+          <h2 class="wm result-headline" id="resultTitle"></h2>
           <p class="result-subtitle" id="resultSubtitle"></p>
           <div class="new-best" id="newBest" hidden>&#9733; <span data-i18n="newBestScore"></span></div>
         </div>
 
+        <!-- Score hero -->
         <div class="result-score-hero">
-          <span class="result-score-value" id="resultScore">0</span>
-          <span class="result-score-label" data-i18n="score"></span>
+          <span class="result-score-value wm" id="resultScore">0</span>
+          <span class="result-score-label">TOTAL SCORE</span>
         </div>
 
+        <!-- 3-stat row -->
         <div class="result-stats-grid">
           <div class="result-stat">
-            <span class="result-stat-val" id="resultChainLen">0</span>
-            <span class="result-stat-label" data-i18n="chain"></span>
+            <span class="result-stat-val wm" id="resultChainLen">0</span>
+            <span class="result-stat-label" data-i18n="links">Links</span>
           </div>
           <div class="result-stat">
-            <span class="result-stat-val" id="resultTime">0:00</span>
-            <span class="result-stat-label" data-i18n="time"></span>
+            <span class="result-stat-val wm" id="resultTime">0:00</span>
+            <span class="result-stat-label" data-i18n="time">Time</span>
+          </div>
+          <div class="result-stat">
+            <span class="result-stat-val wm" id="resultHintsUsed">0</span>
+            <span class="result-stat-label" data-i18n="hints">Hints</span>
           </div>
           <div class="result-stat" id="streakBonusRow" hidden>
             <span class="result-stat-val" id="resultStreakBonus">0</span>
@@ -316,43 +408,57 @@
           </div>
         </div>
 
-        <div class="result-extras">
+        <!-- Your Path card -->
+        <div class="result-card">
+          <div class="result-card-head">
+            <span class="result-card-label">YOUR PATH</span>
+            <span class="result-card-count" id="resultPathCount"></span>
+          </div>
+          <div class="result-chain" id="resultChain"></div>
+        </div>
+
+        <!-- Shortest Path card -->
+        <div class="result-card" id="optimalPath" hidden>
+          <div class="result-card-head">
+            <span class="result-card-label" id="optimalPathLabel" data-i18n="bestPath">SHORTEST PATH</span>
+            <span class="result-card-count" id="optimalComparison"></span>
+          </div>
+          <div class="op-chain" id="optimalPathText"></div>
+          <span class="op-yours" id="opYours" hidden></span>
+          <span class="op-best" id="opBest" hidden></span>
+        </div>
+
+        <!-- Streak strip -->
+        <div class="result-streak" id="resultStreak">
+          <svg viewBox="0 0 24 24" width="18" height="18" class="result-streak-icon"><path d="M12 2c.5 3.5 2.04 5.44 4 7 .75.6 1.36 1.3 1.73 2.2.27.6.27 1.32 0 1.92-.27.6-.88 1.2-1.73 1.68-2.36 1.32-5.64 1.32-8 0-.85-.48-1.46-1.08-1.73-1.68-.27-.6-.27-1.32 0-1.92C6.64 9.7 7.25 9 8 8.4c1.96-1.56 3.5-3.5 4-6.4z" fill="currentColor"/></svg>
+          <span id="resultStreakText"></span>
+        </div>
+
+        <!-- Hidden extras -->
+        <div class="result-extras" hidden>
           <div class="score-breakdown" id="scoreBreakdown" hidden></div>
           <div class="semantic-score" id="semanticScore" hidden></div>
           <div class="percentile-display" id="percentileDisplay" hidden></div>
           <div class="streak-title" id="streakTitle" hidden></div>
           <div class="instinct-score" id="instinctScore" hidden></div>
         </div>
-
-        <div class="result-chain" id="resultChain"></div>
-
         <div class="game-review" id="gameReview" hidden></div>
         <div class="daily-quests-result" id="dailyQuestsResult" hidden></div>
 
-        <div class="optimal-path" id="optimalPath" hidden>
-          <div class="op-label" id="optimalPathLabel" data-i18n="bestPath"></div>
-          <div class="op-comparison" id="optimalComparison" hidden>
-            <span class="op-yours" id="opYours"></span>
-            <span class="op-best" id="opBest"></span>
-          </div>
-          <div class="op-chain" id="optimalPathText"></div>
-        </div>
-
+        <!-- Actions -->
         <div class="result-actions">
           <button class="btn btn-rewarded btn-double-xp" data-action="doubleXp" id="doubleXpBtn" hidden>
             <svg class="btn-svg" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="currentColor"/></svg>
             <span data-i18n="doubleXp">Double XP</span>
           </button>
           <div class="result-actions-primary">
-            <button class="btn btn-primary" data-action="shareResult">
-              <svg class="btn-svg" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <span data-i18n="share"></span>
+            <button class="btn btn-ghost-new" data-action="goHome">
+              <span data-i18n="navHome">Home</span>
             </button>
-            <button class="btn btn-secondary" data-action="playAgain">
-              <span data-i18n="playAgain"></span>
+            <button class="btn btn-primary" data-action="playAgain">
+              <span data-i18n="freeWeave">Free Weave</span> →
             </button>
           </div>
-          <!-- Challenge friend — hidden for ultra-clean result -->
         </div>
 
         <div class="ad-banner-container" id="adBannerResult" hidden>
@@ -364,11 +470,31 @@
     <!-- STATS -->
     <div id="stats" class="screen">
       <div class="screen-inner stats-scroll">
-        <h2 data-i18n="stats"></h2>
+        <div class="screen-title-block">
+          <span class="screen-kicker">Your Record</span>
+          <h2 class="wm"><em data-i18n="stats">Statistics</em></h2>
+        </div>
+
+        <!-- STREAK HERO -->
+        <div class="stats-streak-hero" id="statsStreakHero">
+          <div class="ssh-kicker">CURRENT STREAK</div>
+          <div class="ssh-row">
+            <span class="ssh-number wm" id="statsStreakNum">0</span>
+            <span class="ssh-unit">days</span>
+          </div>
+          <div class="ssh-details">
+            <span><strong id="statsLongestStreak">0</strong> longest</span>
+            <span><strong id="statsWinRateHero">0%</strong> win rate</span>
+            <span><strong id="statsPlayedHero">0</strong> played</span>
+          </div>
+        </div>
 
         <!-- THIS WEEK -->
         <div class="stats-zone">
-          <h3 class="stats-zone-title" data-i18n="thisWeek">This Week</h3>
+          <div class="stats-zone-header">
+            <h3 class="stats-zone-title" data-i18n="thisWeek">This Week</h3>
+            <span class="stats-zone-total" id="statsWeekTotal"></span>
+          </div>
           <div class="weekly-heatmap" id="weeklyHeatmap" role="group" aria-label="Weekly activity heatmap"></div>
         </div>
 
@@ -432,7 +558,13 @@
     <!-- COLLECTION -->
     <div id="collection" class="screen" role="region" aria-label="Word Collection">
       <div class="screen-inner collection-scroll">
-        <h2 data-i18n="wordCollection">Word Collection</h2>
+        <div class="screen-title-block">
+          <span class="screen-kicker">Words Discovered</span>
+          <div class="screen-title-row">
+            <h2 class="wm"><em data-i18n="wordCollection">Collection</em></h2>
+            <span class="collection-counter" id="collectionCounter"></span>
+          </div>
+        </div>
         <div class="collection-summary" id="collectionSummary" role="status" aria-live="polite"></div>
         <div class="collection-groups" id="collectionGroups" role="list" aria-label="Semantic groups"></div>
         <div class="collection-detail-overlay hidden" id="collectionDetail"></div>
@@ -442,7 +574,10 @@
     <!-- SETTINGS -->
     <div id="settings" class="screen">
       <div class="screen-inner settings-scroll">
-        <h2 data-i18n="settings"></h2>
+        <div class="screen-title-block">
+          <span class="screen-kicker">Preferences</span>
+          <h2 class="wm"><em data-i18n="settings">Settings</em></h2>
+        </div>
 
         <!-- GAME -->
         <div class="settings-section-title">Game</div>

@@ -648,6 +648,7 @@
     if (name === 'game') ensureSessionGoalIndicator();
     if (name === 'menu') {
       renderStreakCalendar();
+      populateMenuMasthead();
       const cb = document.getElementById('continueBtn');
       if (cb) cb.hidden = !loadGameState();
       updateMenuLevel();
@@ -723,7 +724,7 @@
     const done = !!state.daily[getTodayKey()];
     btn.classList.toggle('daily-done', done);
     btn.disabled = done;
-    const label = btn.querySelector('[data-i18n="play"]') || btn.querySelector('[data-i18n="daily"]');
+    const label = btn.querySelector('[data-i18n="play"]') || btn.querySelector('[data-i18n="daily"]') || btn.querySelector('[data-i18n="playTodaysPath"]');
     if (label) {
       if (done) {
         const entry = state.daily[getTodayKey()];
@@ -732,7 +733,7 @@
         label.innerHTML = `${t('daily') || 'Daily'} ✓ <span class="daily-inline-score">${(entry.score || 0).toLocaleString()} · ${rLabel}</span>`;
         btn.setAttribute('aria-label', `${t('dailyComplete') || 'Daily completed'} — ${entry.score || 0} pts`);
       } else {
-        label.textContent = t('play') || t('daily') || 'Play';
+        label.textContent = t('playTodaysPath') || t('play') || 'Play today\'s path';
         btn.removeAttribute('aria-label');
       }
     }
@@ -750,7 +751,7 @@
     }
     const btn = document.querySelector('[data-action="startDaily"]');
     if (!btn) return;
-    const label = btn.querySelector('[data-i18n="daily"]');
+    const label = btn.querySelector('[data-i18n="daily"]') || btn.querySelector('[data-i18n="playTodaysPath"]');
     if (!label) return;
     function tick() {
       const now = new Date();
@@ -924,6 +925,7 @@
       el.className = 'streak-day';
       if (played) el.classList.add('played');
       if (isToday) el.classList.add('today');
+      if (!played && !isToday) el.classList.add('missed');
       el.setAttribute('role', 'img');
       const dayLabel = dayNames[d.getDay()];
       const statusLabel = isToday ? (played ? 'today, played' : 'today') : (played ? 'played' : '');
@@ -1622,6 +1624,7 @@
       cell.className = 'word-cell cell-enter';
       cell.textContent = getWord(w);
       cell.dataset.concept = w;
+      cell.dataset.tone = getChainTone(i);
       cell.setAttribute('aria-pressed', 'false');
       cell.style.setProperty('--cell-delay', `${i * 30}ms`);
       cell.style.setProperty('--breathe-delay', (Math.random() * 3).toFixed(1));
@@ -2168,6 +2171,13 @@
 
     const optimal = state.puzzle.optimalPath;
 
+    const kicker = document.getElementById('resultKicker');
+    if (kicker) kicker.textContent = state.mode === 'daily' ? `№ ${getDailyNumber()} · GAVE UP` : 'GAVE UP';
+    const hintsEl = document.getElementById('resultHintsUsed');
+    if (hintsEl) hintsEl.textContent = state.hintsUsed || 0;
+    const streakEl = document.getElementById('resultStreak');
+    if (streakEl) streakEl.hidden = true;
+
     document.getElementById('resultEmoji').textContent = '🏳️';
     document.getElementById('resultTitle').textContent = t('gaveUp') || 'Better luck next time!';
     const subEl = document.getElementById('resultSubtitle');
@@ -2564,6 +2574,7 @@
   }
 
   function renderResult(score, rating, isNewBest, livesBonus) {
+    populateResultExtras(score);
     document.getElementById('resultEmoji').textContent =
       { mastermind: '🌟', architect: '🏗️', weaver: '🧵', bridge: '🌉', chain: '🔗', link: '🔸', spark: '✨' }[rating] || '✨';
     document.getElementById('resultTitle').textContent = `${getRatingLabel(rating)} ${getRatingEmoji(rating)}`;
@@ -2697,7 +2708,10 @@
       node.className = 'chain-node';
       if (i === 0) node.classList.add('start');
       else if (i === state.chain.length - 1) node.classList.add('end');
-      else node.classList.add('mid');
+      else {
+        node.classList.add('mid');
+        node.classList.add('tone-' + getChainTone(i - 1));
+      }
       const concept = window.WORD_DATA.concepts[c];
       const groupEmoji = GROUP_EMOJI[concept?.g] || '';
       node.textContent = getWord(c);
@@ -3097,7 +3111,7 @@
   function trackWord(id) { LW.collection.trackWord(id); }
   function trackChainLinks() { LW.collection.trackChainLinks(); }
   function getCollectionStats() { return LW.collection.getCollectionStats(); }
-  function renderCollection() { LW.collection.renderCollection(groupColors); }
+  function renderCollection() { populateCollectionCounter(); LW.collection.renderCollection(groupColors); }
 
   // ═══════════════════════════════════════════
   //  UI UPDATES
@@ -3135,7 +3149,10 @@
       node.className = 'chain-node';
       if (i === 0) node.classList.add('start');
       else if (c === state.puzzle.end) node.classList.add('end');
-      else node.classList.add('mid');
+      else {
+        node.classList.add('mid');
+        node.classList.add('tone-' + getChainTone(i - 1));
+      }
       node.textContent = getWord(c);
       container.appendChild(node);
     }
@@ -3246,6 +3263,13 @@
     state.stats.played++;
     state.stats.lossesLives = (state.stats.lossesLives || 0) + 1;
     save();
+
+    const kicker = document.getElementById('resultKicker');
+    if (kicker) kicker.textContent = 'GAME OVER';
+    const hintsEl = document.getElementById('resultHintsUsed');
+    if (hintsEl) hintsEl.textContent = state.hintsUsed || 0;
+    const streakEl = document.getElementById('resultStreak');
+    if (streakEl) streakEl.hidden = true;
 
     document.getElementById('resultEmoji').textContent = '💔';
     document.getElementById('resultTitle').textContent = t('gameOverLives');
@@ -3456,6 +3480,7 @@
   //  STATS
   // ═══════════════════════════════════════════
   function renderStats() {
+    populateStatsHero();
     const s = state.stats;
     document.getElementById('statPlayed').textContent = s.played;
     document.getElementById('statStreak').textContent = s.streak;
@@ -4916,6 +4941,132 @@
   }
 
   // ═══════════════════════════════════════════
+  //  V3 DESIGN — POPULATE NEW ELEMENTS
+  // ═══════════════════════════════════════════
+  const CHAIN_TONES = ['inkblue', 'plum', 'forest', 'amber'];
+
+  function populateSplash() {
+    const dayNum = getDailyNumber();
+    const el = document.getElementById('splashKicker');
+    if (el) el.textContent = `№ ${dayNum}`;
+    const dateEl = document.getElementById('splashDate');
+    if (dateEl) {
+      const d = new Date();
+      const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+      const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+      dateEl.textContent = `${days[d.getDay()]} · ${months[d.getMonth()]} ${d.getDate()}`;
+    }
+  }
+
+  function populateMenuMasthead() {
+    const dayNum = getDailyNumber();
+    const d = new Date();
+    const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+    const kicker = document.getElementById('mastheadKicker');
+    if (kicker) kicker.textContent = `№ ${dayNum} · ${days[d.getDay()]} · ${months[d.getMonth()]} ${d.getDate()}`;
+
+    const solved = document.getElementById('mastheadSolved');
+    if (solved) {
+      const count = Object.keys(state.daily).filter(k => !k.startsWith('archive_') && !k.endsWith('_bonus')).length;
+      if (count > 0) solved.textContent = `${count} solved`;
+      else solved.textContent = '';
+    }
+
+    const theme = getDailyTheme();
+    const themeName = document.getElementById('heroThemeName');
+    if (themeName) {
+      const em = themeName.querySelector('em');
+      if (em) em.textContent = theme.name || t('dailyPath') || 'Daily Path';
+      else themeName.innerHTML = `<em>${theme.name || t('dailyPath') || 'Daily Path'}</em>`;
+    }
+
+    const puzzle = generatePuzzle(dayNum, state.difficulty, theme.groups, true, getDailyDist(dayNum));
+    if (puzzle) {
+      const startEl = document.getElementById('heroStartWord');
+      if (startEl) startEl.textContent = getWord(puzzle.start);
+      const endEl = document.getElementById('heroEndWord');
+      if (endEl) endEl.textContent = getWord(puzzle.end);
+    }
+
+    const streakCount = document.getElementById('menuStreakCount');
+    if (streakCount) streakCount.textContent = state.stats.streak || 0;
+    const streakPill = document.getElementById('menuStreakPill');
+    if (streakPill) streakPill.classList.toggle('hidden', !state.stats.streak);
+  }
+
+  function populateResultExtras(score) {
+    const dayNum = getDailyNumber();
+    const kicker = document.getElementById('resultKicker');
+    if (kicker) {
+      if (state.mode === 'daily') kicker.textContent = `№ ${dayNum} · SOLVED`;
+      else if (state.mode === 'endless') kicker.textContent = 'FREE WEAVE · SOLVED';
+      else if (state.mode === 'blitz') kicker.textContent = 'BLITZ · SOLVED';
+      else kicker.textContent = 'SOLVED';
+    }
+
+    const hintsEl = document.getElementById('resultHintsUsed');
+    if (hintsEl) hintsEl.textContent = state.hintsUsed || 0;
+
+    const pathCount = document.getElementById('resultPathCount');
+    if (pathCount) pathCount.textContent = `${state.chain.length} links`;
+
+    const streakText = document.getElementById('resultStreakText');
+    if (streakText) {
+      const s = state.stats.streak;
+      if (s > 0) {
+        streakText.textContent = `${s} day streak`;
+        const streakEl = document.getElementById('resultStreak');
+        if (streakEl) streakEl.hidden = false;
+      } else {
+        const streakEl = document.getElementById('resultStreak');
+        if (streakEl) streakEl.hidden = true;
+      }
+    }
+  }
+
+  function populateStatsHero() {
+    const s = state.stats;
+    const streakNum = document.getElementById('statsStreakNum');
+    if (streakNum) streakNum.textContent = s.streak || 0;
+    const longest = document.getElementById('statsLongestStreak');
+    if (longest) longest.textContent = s.maxStreak || 0;
+    const winRate = document.getElementById('statsWinRateHero');
+    if (winRate) winRate.textContent = s.played ? Math.round((s.won / s.played) * 100) + '%' : '0%';
+    const played = document.getElementById('statsPlayedHero');
+    if (played) played.textContent = s.played || 0;
+
+    const weekTotal = document.getElementById('statsWeekTotal');
+    if (weekTotal) {
+      const today = new Date();
+      const dow = (today.getUTCDay() + 6) % 7;
+      let total = 0;
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(today);
+        d.setUTCDate(d.getUTCDate() - (dow - i));
+        const key = d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0') + '-' + String(d.getUTCDate()).padStart(2, '0');
+        const entry = state.daily[key];
+        if (entry && entry.score) total += entry.score;
+      }
+      weekTotal.textContent = total > 0 ? `${total.toLocaleString()} total` : '';
+    }
+  }
+
+  function populateCollectionCounter() {
+    const el = document.getElementById('collectionCounter');
+    if (!el) return;
+    const colStats = getCollectionStats();
+    if (colStats.totalWords) {
+      el.textContent = `${colStats.totalFound}/${colStats.totalWords}`;
+    }
+  }
+
+  function getChainTone(index) {
+    return CHAIN_TONES[index % CHAIN_TONES.length];
+  }
+
+  // ═══════════════════════════════════════════
   //  BOOT
   // ═══════════════════════════════════════════
   function init() {
@@ -4944,6 +5095,8 @@
     onboarding.bindEvents();
     parseChallenge();
     renderStreakCalendar();
+    populateSplash();
+    populateMenuMasthead();
 
     const savedGame = loadGameState();
     const continueBtn = document.getElementById('continueBtn');
