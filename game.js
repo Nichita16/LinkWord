@@ -618,6 +618,7 @@
     setTimeout(() => next.removeAttribute('data-transition'), dur + 50);
 
     updateBottomNav(name);
+    updateDesktopTopbar(name);
 
     requestAnimationFrame(() => {
       const target = next.querySelector('h2, h1, button:not([hidden]):not([disabled])');
@@ -715,6 +716,20 @@
       if (isActive) tab.setAttribute('aria-current', 'page');
       else tab.removeAttribute('aria-current');
     });
+  }
+
+  function updateDesktopTopbar(screenName) {
+    const bar = document.getElementById('desktopTopbar');
+    if (!bar) return;
+    const hideBar = screenName === 'splash';
+    bar.style.display = hideBar ? 'none' : '';
+    const navMap = { menu: 'menu', stats: 'stats', collection: 'collection', howto: 'howto', settings: 'settings', game: 'menu', result: 'menu' };
+    const activeNav = navMap[screenName] || 'menu';
+    bar.querySelectorAll('.desktop-topbar-nav a').forEach(a => {
+      a.classList.toggle('active', a.dataset.nav === activeNav);
+    });
+    const sc = document.getElementById('desktopStreakCount');
+    if (sc) sc.textContent = state.streak || 0;
   }
 
   let _dailyCountdownInterval = null;
@@ -4793,6 +4808,18 @@
         if (!target) return;
         const screenEl = document.getElementById(target);
         showScreen(screenEl ? target : 'menu');
+      });
+    }
+
+    // Desktop topbar nav clicks
+    const desktopNav = document.getElementById('desktopTopbar');
+    if (desktopNav) {
+      desktopNav.addEventListener('click', (e) => {
+        const link = e.target.closest('[data-nav]');
+        if (!link) return;
+        e.preventDefault();
+        const target = link.dataset.nav;
+        if (target) showScreen(target);
       });
     }
 
