@@ -26,8 +26,8 @@
     var enTranslations = window.WORD_TRANSLATIONS_EN;
     if (enTranslations?.[conceptId]) return enTranslations[conceptId];
     var concept = window.WORD_DATA?.concepts?.[conceptId];
-    if (!concept) return conceptId.toUpperCase();
-    return concept.t?.[_state.lang] || concept.t?.en || conceptId.toUpperCase();
+    if (!concept) return conceptId.replace(/_/g, ' ').toUpperCase();
+    return concept.t?.[_state.lang] || concept.t?.en || conceptId.replace(/_/g, ' ').toUpperCase();
   }
 
   function loadLanguagePack(lang) {

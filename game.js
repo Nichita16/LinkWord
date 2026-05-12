@@ -2197,7 +2197,7 @@
     document.getElementById('resultTitle').textContent = t('gaveUp') || 'Better luck next time!';
     const subEl = document.getElementById('resultSubtitle');
     if (subEl) subEl.textContent = '';
-    document.getElementById('resultChainLen').textContent = `${state.chain.length} ${t('words') || 'words'}`;
+    document.getElementById('resultChainLen').textContent = state.chain.length;
     document.getElementById('resultTime').textContent = formatTime(state.timer);
     document.getElementById('resultScore').textContent = '0';
     clearResultScreen();
@@ -2595,7 +2595,7 @@
     document.getElementById('resultTitle').textContent = `${getRatingLabel(rating)} ${getRatingEmoji(rating)}`;
     const subtitleEl = document.getElementById('resultSubtitle');
     if (subtitleEl) subtitleEl.textContent = pickRandom(MICROCOPY.completeMsg[rating] || MICROCOPY.completeMsg.spark);
-    document.getElementById('resultChainLen').textContent = `${state.chain.length} ${t('words') || 'words'}`;
+    document.getElementById('resultChainLen').textContent = state.chain.length;
     document.getElementById('resultTime').textContent = formatTime(state.timer);
     const resultScoreEl = document.getElementById('resultScore');
     resultScoreEl.textContent = '0';
@@ -2636,7 +2636,7 @@
     if (xpRow && state._lastEarnedXP > 0) {
       xpRow.hidden = false;
       const xpVal = document.getElementById('resultXPDetail');
-      if (xpVal) xpVal.textContent = `+${state._lastEarnedXP} XP`;
+      if (xpVal) xpVal.textContent = `+${state._lastEarnedXP}`;
     }
 
     // Granular score breakdown
@@ -3291,7 +3291,7 @@
     document.getElementById('resultTitle').textContent = t('gameOverLives');
     const subEl = document.getElementById('resultSubtitle');
     if (subEl) subEl.textContent = '';
-    document.getElementById('resultChainLen').textContent = `${state.chain.length} ${t('words') || 'words'}`;
+    document.getElementById('resultChainLen').textContent = state.chain.length;
     document.getElementById('resultTime').textContent = formatTime(state.timer);
     document.getElementById('resultScore').textContent = '0';
     clearResultScreen();
@@ -3428,7 +3428,7 @@
         } else {
           _btitleEl.textContent = t('blitzOver');
         }
-        document.getElementById('resultChainLen').textContent = `${state.chain.length} ${t('words') || 'words'}`;
+        document.getElementById('resultChainLen').textContent = state.chain.length;
         document.getElementById('resultTime').textContent = formatTime(BLITZ_TIME);
         document.getElementById('resultScore').textContent = state.runningScore;
         const newBestEl = document.getElementById('newBest');
@@ -3777,6 +3777,8 @@
     const section = document.getElementById('leaderboardSection');
     const list = document.getElementById('leaderboardList');
     if (!section || !list) return;
+    section.hidden = true;
+    return;
     if (!window.LinkAuth || !window.LinkAuth.getWeeklyLeaderboard) {
       if (state.stats.played < 3) { section.hidden = true; return; }
       section.hidden = false;
@@ -4263,7 +4265,8 @@
 
   function startWeeklyTrial() {
     const rule = getWeeklyRule();
-    showToast(`${t('weeklyRule') || 'Rule'}: ${t(rule.key) || rule.id}`, 'info');
+    const ruleText = t(rule.key) || rule.id;
+    showToast((t('weeklyRule') || 'Rule: {rule}').replace('{rule}', ruleText), 'info');
     state._trialRule = rule.id;
     if (rule.id === 'noHints') state.hintsLeft = 0;
     startGame('endless');
@@ -4359,13 +4362,15 @@
   function renderWeeklyRecap() {
     const el = document.getElementById('weeklyRecap');
     if (!el) return;
+    el.hidden = true;
+    return;
     const s = state.stats;
     if (s.played < 7) { el.hidden = true; return; }
     el.hidden = false;
     const weekScores = (s.scores || []).slice(-7);
     const weekAvg = weekScores.length ? Math.round(weekScores.reduce((a, b) => a + b, 0) / weekScores.length) : 0;
     const weekBest = weekScores.length ? Math.max(...weekScores) : 0;
-    el.innerHTML = `<h4>${t('weekInLinks') || 'Your Week in Links'}</h4><div class="recap-stats"><span>${t('statPlayed') || 'Played'}: ${weekScores.length}</span> · <span>Avg: ${weekAvg}</span> · <span>Best: ${weekBest}</span></div>`;
+    el.innerHTML = `<h4>${t('weekInLinks') || 'Your Week in Links'}</h4><div class="recap-stats"><span>${t('played') || 'Played'}: ${weekScores.length}</span> · <span>Avg: ${weekAvg}</span> · <span>Best: ${weekBest}</span></div>`;
   }
 
   // ═══════════════════════════════════════════
@@ -5156,6 +5161,7 @@
     if (state.highContrast) document.documentElement.classList.add('high-contrast');
     applyI18n();
     populateLanguageSelect();
+    syncDesktopLangSelect();
     syncDifficulty();
     document.body.classList.toggle('sound-off', !state.sound);
     const soundBtn = document.getElementById('soundBtn');
