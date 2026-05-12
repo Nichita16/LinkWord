@@ -3837,6 +3837,7 @@
   // ═══════════════════════════════════════════
   function syncSettings() {
     populateLanguageSelect();
+    syncDesktopLangSelect();
     syncSwitch('themeSwitch', state.theme === 'light');
     syncSwitch('soundSwitch', state.sound);
     syncSwitch('hapticsSwitch', state.haptics);
@@ -3864,6 +3865,14 @@
     if (!el) return;
     const input = el.querySelector('input');
     if (input) input.checked = !!checked;
+  }
+
+  function syncDesktopLangSelect() {
+    const dls = document.getElementById('desktopLangSelect');
+    const mainSel = document.getElementById('langSelect');
+    if (!dls || !mainSel) return;
+    dls.innerHTML = mainSel.innerHTML;
+    dls.value = state.lang;
   }
 
   function syncToggle(id, value) {
@@ -4894,6 +4903,8 @@
     if (langSel) {
       langSel.addEventListener('change', (e) => {
         state.lang = e.target.value;
+        const dls = document.getElementById('desktopLangSelect');
+        if (dls) dls.value = state.lang;
         loadLanguagePack(state.lang).then(() => applyI18n());
         if (state.puzzle && document.getElementById('game').classList.contains('active')) {
           const savedScore = state.runningScore;
@@ -4901,6 +4912,19 @@
           renderGame();
           document.getElementById('scoreDisplay').textContent = savedScore;
           document.getElementById('timerDisplay').textContent = state.mode === 'blitz' ? formatTime(state.blitzTime) : formatTime(savedTimer);
+          updateGrid();
+        }
+        save();
+      });
+    }
+    const desktopLangSel = document.getElementById('desktopLangSelect');
+    if (desktopLangSel) {
+      desktopLangSel.addEventListener('change', (e) => {
+        state.lang = e.target.value;
+        if (langSel) langSel.value = state.lang;
+        loadLanguagePack(state.lang).then(() => applyI18n());
+        if (state.puzzle && document.getElementById('game').classList.contains('active')) {
+          renderGame();
           updateGrid();
         }
         save();

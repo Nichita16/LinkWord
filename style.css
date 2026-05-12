@@ -827,6 +827,23 @@ html, body {
   align-items: center;
   gap: 14px;
 }
+.desktop-lang-select {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  padding: 5px 8px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 20px;
+}
 .desktop-avatar {
   width: 32px;
   height: 32px;
@@ -2619,11 +2636,15 @@ html, body {
     max-width: 800px;
     margin: 0 auto;
   }
-  .stats-grid { grid-template-columns: repeat(3, 1fr); }
-  .stats-grid-2 { grid-template-columns: repeat(3, 1fr); }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .stat-card { padding: 20px; }
+  .stat-value { font-size: 36px; }
+  .stats-streak-hero { padding: 24px; }
+  .weekly-heatmap { justify-content: center; gap: 24px; }
   .achievements-grid { grid-template-columns: repeat(5, 1fr); }
-  .achievement { aspect-ratio: auto; padding: 14px 8px; }
-  .achievement .ach-icon { font-size: 22px; }
+  .achievement { aspect-ratio: auto; padding: 16px 10px; }
+  .achievement .ach-icon { font-size: 24px; }
   .achievement .ach-name { font-size: 11px; }
   .achievement .ach-desc { font-size: 11px; }
 
