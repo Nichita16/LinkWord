@@ -3844,6 +3844,13 @@
     syncSwitch('notificationsSwitch', state.notifications);
     syncSwitch('highContrastSwitch', state.highContrast);
     syncSwitch('showGroupsSwitch', state.showGroups);
+    syncToggle('themeToggle', state.theme);
+    syncToggle('soundToggle', state.sound ? 'on' : 'off');
+    syncToggle('hapticsToggle', state.haptics ? 'on' : 'off');
+    syncToggle('reduceMotionToggle', state.reduceMotion ? 'on' : 'off');
+    syncToggle('notificationsToggle', state.notifications ? 'on' : 'off');
+    syncToggle('highContrastToggle', state.highContrast ? 'on' : 'off');
+    syncToggle('showGroupsToggle', state.showGroups ? 'on' : 'off');
     renderCosmeticThemeSelector();
     syncDifficulty();
     if (window.LinkAuth) {
@@ -4900,15 +4907,15 @@
       });
     }
 
-    // Settings switches (iOS-style toggles)
+    // Settings switches (iOS-style toggles — mobile)
     const switchHandlers = {
-      themeSwitch: (on) => { state.theme = on ? 'light' : 'dark'; applyTheme(); },
-      soundSwitch: (on) => { state.sound = on; document.body.classList.toggle('sound-off', !on); },
-      hapticsSwitch: (on) => { state.haptics = on; },
-      reduceMotionSwitch: (on) => { state.reduceMotion = on; document.documentElement.classList.toggle('reduce-motion', on); },
-      notificationsSwitch: (on) => { state.notifications = on; if (on) requestNotificationPermission(); },
-      highContrastSwitch: (on) => { state.highContrast = on; document.documentElement.classList.toggle('high-contrast', on); },
-      showGroupsSwitch: (on) => { state.showGroups = on; document.querySelectorAll('.group-dot').forEach(d => d.hidden = !on); },
+      themeSwitch: (on) => { state.theme = on ? 'light' : 'dark'; applyTheme(); syncToggle('themeToggle', state.theme); },
+      soundSwitch: (on) => { state.sound = on; document.body.classList.toggle('sound-off', !on); syncToggle('soundToggle', on ? 'on' : 'off'); },
+      hapticsSwitch: (on) => { state.haptics = on; syncToggle('hapticsToggle', on ? 'on' : 'off'); },
+      reduceMotionSwitch: (on) => { state.reduceMotion = on; document.documentElement.classList.toggle('reduce-motion', on); syncToggle('reduceMotionToggle', on ? 'on' : 'off'); },
+      notificationsSwitch: (on) => { state.notifications = on; if (on) requestNotificationPermission(); syncToggle('notificationsToggle', on ? 'on' : 'off'); },
+      highContrastSwitch: (on) => { state.highContrast = on; document.documentElement.classList.toggle('high-contrast', on); syncToggle('highContrastToggle', on ? 'on' : 'off'); },
+      showGroupsSwitch: (on) => { state.showGroups = on; document.querySelectorAll('.group-dot').forEach(d => d.hidden = !on); syncToggle('showGroupsToggle', on ? 'on' : 'off'); },
     };
     Object.keys(switchHandlers).forEach(id => {
       const sw = document.getElementById(id);
@@ -4917,6 +4924,26 @@
       if (!input) return;
       input.addEventListener('change', () => {
         switchHandlers[id](input.checked);
+        save();
+      });
+    });
+
+    // Toggle groups (On/Off buttons — desktop)
+    document.querySelectorAll('.toggle-group').forEach(group => {
+      group.addEventListener('click', (e) => {
+        const btn = e.target.closest('.toggle-btn');
+        if (!btn) return;
+        group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const val = btn.dataset.value;
+        const id = group.id;
+        if (id === 'themeToggle') { state.theme = val; applyTheme(); syncSwitch('themeSwitch', val === 'light'); }
+        else if (id === 'soundToggle') { state.sound = val === 'on'; document.body.classList.toggle('sound-off', !state.sound); syncSwitch('soundSwitch', state.sound); }
+        else if (id === 'hapticsToggle') { state.haptics = val === 'on'; syncSwitch('hapticsSwitch', state.haptics); }
+        else if (id === 'reduceMotionToggle') { state.reduceMotion = val === 'on'; document.documentElement.classList.toggle('reduce-motion', state.reduceMotion); syncSwitch('reduceMotionSwitch', state.reduceMotion); }
+        else if (id === 'notificationsToggle') { state.notifications = val === 'on'; if (state.notifications) requestNotificationPermission(); syncSwitch('notificationsSwitch', state.notifications); }
+        else if (id === 'highContrastToggle') { state.highContrast = val === 'on'; document.documentElement.classList.toggle('high-contrast', state.highContrast); syncSwitch('highContrastSwitch', state.highContrast); }
+        else if (id === 'showGroupsToggle') { state.showGroups = val === 'on'; document.querySelectorAll('.group-dot').forEach(d => d.hidden = !state.showGroups); syncSwitch('showGroupsSwitch', state.showGroups); }
         save();
       });
     });

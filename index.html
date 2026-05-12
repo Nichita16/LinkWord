@@ -622,18 +622,26 @@
 
         <div class="setting-group">
           <span id="showGroupsLabel" class="setting-label" data-i18n="showThemeColors">Show Theme Colors</span>
-          <label class="switch" id="showGroupsSwitch">
+          <label class="switch mobile-only" id="showGroupsSwitch">
             <input type="checkbox" aria-labelledby="showGroupsLabel">
             <span class="slider"></span>
           </label>
+          <div class="toggle-group desktop-only" id="showGroupsToggle" role="group" aria-labelledby="showGroupsLabel">
+            <button class="toggle-btn" data-value="on">On</button>
+            <button class="toggle-btn active" data-value="off">Off</button>
+          </div>
         </div>
 
         <div class="setting-group">
           <span id="notificationsLabel" class="setting-label" data-i18n="notifications">Notifications</span>
-          <label class="switch" id="notificationsSwitch">
+          <label class="switch mobile-only" id="notificationsSwitch">
             <input type="checkbox" checked aria-labelledby="notificationsLabel">
             <span class="slider"></span>
           </label>
+          <div class="toggle-group desktop-only" id="notificationsToggle" role="group" aria-labelledby="notificationsLabel">
+            <button class="toggle-btn active" data-value="on">On</button>
+            <button class="toggle-btn" data-value="off">Off</button>
+          </div>
         </div>
 
         <!-- LOOK & FEEL -->
@@ -646,42 +654,62 @@
 
         <div class="setting-group">
           <span id="themeLabel" class="setting-label" data-i18n="theme"></span>
-          <label class="switch" id="themeSwitch">
+          <label class="switch mobile-only" id="themeSwitch">
             <input type="checkbox" aria-labelledby="themeLabel">
             <span class="slider"></span>
           </label>
+          <div class="toggle-group desktop-only" id="themeToggle" role="group" aria-labelledby="themeLabel">
+            <button class="toggle-btn active" data-value="dark" data-i18n="dark"></button>
+            <button class="toggle-btn" data-value="light" data-i18n="light"></button>
+          </div>
         </div>
 
         <div class="setting-group">
           <span id="soundLabel" class="setting-label" data-i18n="sound"></span>
-          <label class="switch" id="soundSwitch">
+          <label class="switch mobile-only" id="soundSwitch">
             <input type="checkbox" checked aria-labelledby="soundLabel">
             <span class="slider"></span>
           </label>
+          <div class="toggle-group desktop-only" id="soundToggle" role="group" aria-labelledby="soundLabel">
+            <button class="toggle-btn active" data-value="on" data-i18n="on"></button>
+            <button class="toggle-btn" data-value="off" data-i18n="off"></button>
+          </div>
         </div>
 
         <div class="setting-group">
           <span id="hapticsLabel" class="setting-label" data-i18n="haptics"></span>
-          <label class="switch" id="hapticsSwitch">
+          <label class="switch mobile-only" id="hapticsSwitch">
             <input type="checkbox" checked aria-labelledby="hapticsLabel">
             <span class="slider"></span>
           </label>
+          <div class="toggle-group desktop-only" id="hapticsToggle" role="group" aria-labelledby="hapticsLabel">
+            <button class="toggle-btn active" data-value="on" data-i18n="on"></button>
+            <button class="toggle-btn" data-value="off" data-i18n="off"></button>
+          </div>
         </div>
 
         <div class="setting-group">
           <span id="reduceMotionLabel" class="setting-label" data-i18n="reduceMotion"></span>
-          <label class="switch" id="reduceMotionSwitch">
+          <label class="switch mobile-only" id="reduceMotionSwitch">
             <input type="checkbox" aria-labelledby="reduceMotionLabel">
             <span class="slider"></span>
           </label>
+          <div class="toggle-group desktop-only" id="reduceMotionToggle" role="group" aria-labelledby="reduceMotionLabel">
+            <button class="toggle-btn" data-value="on" data-i18n="on"></button>
+            <button class="toggle-btn active" data-value="off" data-i18n="off"></button>
+          </div>
         </div>
 
         <div class="setting-group">
           <span id="highContrastLabel" class="setting-label" data-i18n="highContrast">High Contrast</span>
-          <label class="switch" id="highContrastSwitch">
+          <label class="switch mobile-only" id="highContrastSwitch">
             <input type="checkbox" aria-labelledby="highContrastLabel">
             <span class="slider"></span>
           </label>
+          <div class="toggle-group desktop-only" id="highContrastToggle" role="group" aria-labelledby="highContrastLabel">
+            <button class="toggle-btn" data-value="on" data-i18n="on"></button>
+            <button class="toggle-btn active" data-value="off" data-i18n="off"></button>
+          </div>
         </div>
 
         <!-- ACCOUNT -->

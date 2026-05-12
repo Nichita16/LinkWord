@@ -1962,11 +1962,14 @@ html, body {
   flex-direction: column;
   gap: 8px;
 }
-.setting-group:has(.switch) {
+.setting-group:has(.switch),
+.setting-group:has(.toggle-group) {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
 }
+.desktop-only { display: none; }
+.mobile-only { display: inline-block; }
 .setting-group label,
 .setting-group .setting-label {
   font-family: var(--font-sans);
@@ -2635,6 +2638,10 @@ html, body {
     padding: 0 24px;
   }
   .tutorial-slide { padding: 24px; }
+
+  /* Desktop: show On/Off buttons, hide iOS switches */
+  .desktop-only { display: flex; }
+  .mobile-only { display: none !important; }
 }
 
 @media (max-width: 319px) {
